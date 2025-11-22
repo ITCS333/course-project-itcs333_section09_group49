@@ -10,15 +10,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($user && password_verify($password, $user['password'])) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role'];
-        
-        header("Location: HomePage.php");
-        exit();
-    } else {
-        $error = "Wrong username or password!";
-    }
+    $_SESSION['user_id'] = $user['id'];
+    $_SESSION['username'] = $user['username'];
+    $_SESSION['role'] = $user['role'];
+    
+    
+    setcookie('user_id', $user['id'], time() + (86400 * 30), "/"); // 30 days
+    setcookie('username', $user['username'], time() + (86400 * 30), "/");
+    setcookie('role', $user['role'], time() + (86400 * 30), "/");
+    
+    header("Location: HomePage.php");
+    exit();
+}
 }
 ?>
 
