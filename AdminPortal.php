@@ -1,14 +1,13 @@
 <?php
 include 'Config.php';
 
-// Check if user is admin OR instructor
 if (!isLoggedIn() || !isAdmin()) {
     header("Location: HomePage.php");
     exit();
 }
 
 $message = '';
-$message_type = ''; // 'success' or 'error'
+$message_type = ''; 
 $action = $_GET['action'] ?? 'dashboard';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -66,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Get students list
+
 $students = [];
 if ($action == 'students') {
     $stmt = $conn->query("SELECT * FROM users WHERE role = 'student'");
@@ -166,7 +165,6 @@ if ($action == 'students') {
                     <p>No students found.</p>
                 <?php endif; ?>
 
-                <!-- Edit Student Form -->
                 <div id="editForm" class="edit-form" style="display: none;">
                     <h3>Edit Student</h3>
                     <form method="POST">
