@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `course_page`
+-- Database: `course_management`
 --
 
 -- --------------------------------------------------------
@@ -193,25 +193,20 @@ CREATE TABLE `student_submissions` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password_hash` varchar(255) NOT NULL,
-  `role` enum('admin','student') DEFAULT 'student',
-  `student_id` varchar(20) DEFAULT NULL,
-  `full_name` varchar(100) NOT NULL,
-  `created_by` int(11) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `last_login` timestamp NULL DEFAULT NULL,
-  `is_active` tinyint(1) DEFAULT 1
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `role` enum('admin','student','instructor') DEFAULT 'student'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `student_id`, `full_name`, `created_by`, `created_at`, `updated_at`, `last_login`, `is_active`) VALUES
-(1, 'admin', 'admin@uob.edu.bh', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', NULL, 'Course Administrator', NULL, '2025-11-21 21:30:45', '2025-11-21 21:30:45', NULL, 1),
-(2, 'student1', 'student1@stu.uob.edu.bh', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student', 'S12345', 'John Student', 1, '2025-11-21 21:30:45', '2025-11-21 21:30:45', NULL, 1);
+INSERT INTO `users` (`id`, `username`, `password`, `email`, `role`) VALUES
+(1, 'admin', '$2y$10$mjC/1MBgGkbAs.6dHeH5L.57Hg5BS1naLm2iwz/4uz2NSdRH7yRfy', 'admin@example.com', 'admin'),
+(2, 'student1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student1@example.com', 'student'),
+(6, 'instructor1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'instructor1@course.com', 'instructor');
+
 
 -- --------------------------------------------------------
 
