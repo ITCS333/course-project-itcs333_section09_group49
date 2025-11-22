@@ -1,4 +1,7 @@
 <?php
+ini_set('session.cookie_lifetime', 0);
+ini_set('session.gc_maxlifetime', 1800); 
+
 session_start();
 
 $host = "localhost";
@@ -20,5 +23,4 @@ function isLoggedIn() {
 function isAdmin() {
     return isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'instructor');
 }
-
 ?>
