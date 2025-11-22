@@ -4,7 +4,7 @@ session_start();
 $host = "localhost";
 $user = "root"; 
 $password = "";
-$database = "course_management";
+$database = "course_page";
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$database", $user, $password);
@@ -20,4 +20,5 @@ function isLoggedIn() {
 function isAdmin() {
     return isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'instructor');
 }
+
 ?>
