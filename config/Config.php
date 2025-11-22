@@ -17,7 +17,16 @@ try {
 }
 
 function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+    if (isset($_SESSION['user_id'])) {
+        return true;
+    }
+    elseif (isset($_COOKIE['user_id']) && isset($_COOKIE['username']) && isset($_COOKIE['role'])) {
+        $_SESSION['user_id'] = $_COOKIE['user_id'];
+        $_SESSION['username'] = $_COOKIE['username'];
+        $_SESSION['role'] = $_COOKIE['role'];
+        return true;
+    }
+    return false;
 }
 
 function isAdmin() {
