@@ -18,18 +18,18 @@ let students = [];
 // the HTML document is parsed before this script runs.
 
 // TODO: Select the student table body (tbody).
-
+const studentTableBody = document.querySelector('#student-table tbody');
 // TODO: Select the "Add Student" form.
 // (You'll need to add id="add-student-form" to this form in your HTML).
-
+const addStudentForm = document.getElementById('add-student-form');
 // TODO: Select the "Change Password" form.
 // (You'll need to add id="password-form" to this form in your HTML).
-
+const passwordForm = document.getElementById('password-form');
 // TODO: Select the search input field.
 // (You'll need to add id="search-input" to this input in your HTML).
-
+const searchInput = document.getElementById('search-input');
 // TODO: Select all table header (th) elements in thead.
-
+const tableHeaders = document.querySelectorAll('#student-table thead th');
 // --- Functions ---
 
 /**
@@ -44,7 +44,38 @@ let students = [];
  * - A "Delete" button with class "delete-btn" and a data-id attribute set to the student's ID.
  */
 function createStudentRow(student) {
-  // ... your implementation here ...
+  const row = document.createElement('tr');
+  
+  const nameCell = document.createElement('td');
+  nameCell.textContent = student.name;
+  
+  const idCell = document.createElement('td');
+  idCell.textContent = student.id;
+  
+  const emailCell = document.createElement('td');
+  emailCell.textContent = student.email;
+  
+  const actionsCell = document.createElement('td');
+  
+  const editButton = document.createElement('button');
+  editButton.textContent = 'Edit';
+  editButton.className = 'edit-btn';
+  editButton.setAttribute('data-id', student.id);
+  
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = 'Delete';
+  deleteButton.className = 'delete-btn';
+  deleteButton.setAttribute('data-id', student.id);
+  
+  actionsCell.appendChild(editButton);
+  actionsCell.appendChild(deleteButton);
+  
+  row.appendChild(nameCell);
+  row.appendChild(idCell);
+  row.appendChild(emailCell);
+  row.appendChild(actionsCell);
+  
+  return row;
 }
 
 /**
@@ -56,8 +87,11 @@ function createStudentRow(student) {
  * 3. For each student, call `createStudentRow` and append the returned <tr> to `studentTableBody`.
  */
 function renderTable(studentArray) {
-  // ... your implementation here ...
-}
+  studentTableBody.innerHTML = '';
+  studentArray.forEach(student => {
+    const row = createStudentRow(student);
+    studentTableBody.appendChild(row);
+  });}
 
 /**
  * TODO: Implement the handleChangePassword function.
@@ -72,7 +106,24 @@ function renderTable(studentArray) {
  * 5. Clear all three password input fields.
  */
 function handleChangePassword(event) {
-  // ... your implementation here ...
+  event.preventDefault();
+  
+  const currentPassword = document.getElementById('current-password').value;
+  const newPassword = document.getElementById('new-password').value;
+  const confirmPassword = document.getElementById('confirm-password').value;
+  
+  if (newPassword !== confirmPassword) {
+    alert("Passwords do not match.");
+    return;
+  }
+  
+  if (newPassword.length < 8) {
+    alert("Password must be at least 8 characters.");
+    return;
+  }
+  
+  alert("Password updated successfully!");
+  passwordForm.reset();
 }
 
 /**
@@ -91,7 +142,26 @@ function handleChangePassword(event) {
  * 5. Clear the "student-name", "student-id", "student-email", and "default-password" input fields.
  */
 function handleAddStudent(event) {
-  // ... your implementation here ...
+  event.preventDefault();
+  
+  const name = document.getElementById('student-name').value;
+  const id = document.getElementById('student-id').value;
+  const email = document.getElementById('student-email').value;
+  
+  if (!name || !id || !email) {
+    alert("Please fill out all required fields.");
+    return;
+  }
+  
+  if (students.some(student => student.id === id)) {
+    alert("A student with this ID already exists.");
+    return;
+  }
+  
+  const newStudent = { name, id, email };
+  students.push(newStudent);
+  renderTable(students);
+  addStudentForm.reset();
 }
 
 /**
@@ -106,7 +176,11 @@ function handleAddStudent(event) {
  * 3. (Optional) Check for "edit-btn" and implement edit logic.
  */
 function handleTableClick(event) {
-  // ... your implementation here ...
+   if (event.target.classList.contains('delete-btn')) {
+    const studentId = event.target.getAttribute('data-id');
+    students = students.filter(student => student.id !== studentId);
+    renderTable(students);
+  }
 }
 
 /**
@@ -121,7 +195,16 @@ function handleTableClick(event) {
  * - Call `renderTable` with the *filtered array*.
  */
 function handleSearch(event) {
-  // ... your implementation here ...
+  const searchTerm = searchInput.value.toLowerCase();
+  
+  if (searchTerm === '') {
+    renderTable(students);
+  } else {
+    const filteredStudents = students.filter(student => 
+      student.name.toLowerCase().includes(searchTerm)
+    );
+    renderTable(filteredStudents);
+  }
 }
 
 /**
@@ -139,7 +222,31 @@ function handleSearch(event) {
  * 6. After sorting, call `renderTable(students)` to update the view.
  */
 function handleSort(event) {
-  // ... your implementation here ...
+  const th = event.currentTarget;
+  const columnIndex = th.cellIndex;
+  const sortProperty = ['name', 'id', 'email'][columnIndex];
+  const currentSortDir = th.getAttribute('data-sort-dir') || 'asc';
+  const newSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+  
+  th.setAttribute('data-sort-dir', newSortDir);
+  
+  students.sort((a, b) => {
+    let aValue = a[sortProperty];
+    let bValue = b[sortProperty];
+    
+    if (sortProperty === 'id') {
+      aValue = parseInt(aValue);
+      bValue = parseInt(bValue);
+    } else {
+      aValue = aValue.toLowerCase();
+      bValue = bValue.toLowerCase();
+    }
+     if (aValue < bValue) return newSortDir === 'asc' ? -1 : 1;
+    if (aValue > bValue) return newSortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
+  
+  renderTable(students);
 }
 
 /**
@@ -159,7 +266,20 @@ function handleSort(event) {
  * - "click" on each header in `tableHeaders` -> `handleSort`
  */
 async function loadStudentsAndInitialize() {
-  // ... your implementation here ...
+    try {
+    const response = await fetch('students.json');
+    if (!response.ok) throw new Error('Failed to load students');
+    students = await response.json();
+    renderTable(students);
+    
+    passwordForm.addEventListener('submit', handleChangePassword);
+    addStudentForm.addEventListener('submit', handleAddStudent);
+    studentTableBody.addEventListener('click', handleTableClick);
+    searchInput.addEventListener('input', handleSearch);
+    tableHeaders.forEach(th => th.addEventListener('click', handleSort));
+  } catch (error) {
+    console.error('Error loading students:', error);
+  }
 }
 
 // --- Initial Page Load ---
