@@ -24,7 +24,13 @@ let currentComments = [];
 
 // --- Element Selections ---
 // TODO: Select all the elements you added IDs for in step 2.
-
+const assignmentTitle = document.getElementById("assignment-title");
+const assignmentDueDate = document.getElementById("assignment-due-date");
+const assignmentDescription = document.getElementById("assignment-description");
+const assignmentFilesList = document.getElementById("assignment-files-list");
+const commentList = document.getElementById("comment-list");
+const commentForm = document.getElementById("comment-form");
+const newCommentText = document.getElementById("new-comment-text");
 // --- Functions ---
 
 /**
@@ -34,10 +40,16 @@ let currentComments = [];
  * 2. Use the `URLSearchParams` object to get the value of the 'id' parameter.
  * 3. Return the id.
  */
-function getAssignmentIdFromURL() {
-  // ... your implementation here ...
+function getAssignmentIdFromURL()
+{ 
+  //Get the query string (qs):
+  const qs = window.location.search;
+  //Get value of id - aid-> assignment id, usp-> url srearch param:
+  const usp = new URLSearchParams(qs);
+  const aid = usp.get("id");
+  //Return id
+  return aid;
 }
-
 /**
  * TODO: Implement the renderAssignmentDetails function.
  * It takes one assignment object.
@@ -48,8 +60,26 @@ function getAssignmentIdFromURL() {
  * 4. Clear `assignmentFilesList` and then create and append
  * `<li><a href="#">...</a></li>` for each file in the assignment's 'files' array.
  */
-function renderAssignmentDetails(assignment) {
-  // ... your implementation here ...
+function renderAssignmentDetails(assignment)
+{
+  // set textContent:
+  assignmentTitle.textContent = assignment.title;
+  assignmentDueDate.textContent = "Due: " + assignment.dueDate;
+  assignmentDescription.textContent = assignment.description;
+  // clear 
+  assignmentFilesList.innerHTML = "";
+  // loop through each file
+  assignment.files.forEach(file => {
+    //create new list item and new link:
+    const li = document.createElement("li");
+    const a = document.createElement("a");
+    //set link destination and add it to list item:
+    a.href = "#";
+    a.textContent = file;
+    li.appendChild(a);
+    //add list item to files list:
+    assignmentFilesList.appendChild(li);
+  });
 }
 
 /**
@@ -57,10 +87,21 @@ function renderAssignmentDetails(assignment) {
  * It takes one comment object {author, text}.
  * It should return an <article> element matching the structure in `details.html`.
  */
-function createCommentArticle(comment) {
-  // ... your implementation here ...
+function createCommentArticle(comment) 
+{
+  //create article:
+  const article = document.createElement("article");
+  //create author in a paragraph and add it to article:
+  const author = document.createElement("footer");
+  author.textContent = `Author: ${comment.author}`;
+  article.appendChild(author);
+  //create text in paragraph and add it to article:
+  const text =  document.createElement("p");
+  text.textContent = comment.text;
+  article.appendChild(text);
+  //return article:
+  return article;
 }
-
 /**
  * TODO: Implement the renderComments function.
  * It should:
@@ -69,10 +110,17 @@ function createCommentArticle(comment) {
  * 3. For each comment, call `createCommentArticle()`, and
  * append the resulting <article> to `commentList`.
  */
-function renderComments() {
-  // ... your implementation here ...
+function renderComments()
+{
+  //clear commentList:
+  commentList.innerHTML = "";
+  //loop through currentComments:
+  currentComments.forEach(comment =>{
+    //create and add comment:
+    const commentArticle = createCommentArticle(comment);
+    commentList.appendChild(commentArticle);
+  });
 }
-
 /**
  * TODO: Implement the handleAddComment function.
  * This is the event handler for the `commentForm` 'submit' event.
@@ -86,8 +134,24 @@ function renderComments() {
  * 6. Call `renderComments()` to refresh the list.
  * 7. Clear the `newCommentText` textarea.
  */
-function handleAddComment(event) {
-  // ... your implementation here ...
+function handleAddComment(event)
+{
+  //prevent default submission:
+  event.preventDefault();
+  //Get text:
+  const commentText = newCommentText.value;
+  //retrun if empty:
+  if(commentText === ""){return;};
+  //create new comment and add it:
+  const newComment = {
+    author: "Student",
+    text: commentText
+  };
+  currentComments.push(newComment);
+  //Refresh list:
+  renderComments();
+  //clear textarea:
+  newCommentText.value = "";
 }
 
 /**
@@ -106,9 +170,44 @@ function handleAddComment(event) {
  * - Add the 'submit' event listener to `commentForm` (calls `handleAddComment`).
  * 7. If the assignment is not found, display an error.
  */
-async function initializePage() {
-  // ... your implementation here ...
+async function initializePage()
+{
+  //Get currentAssignmentId:
+  currentAssignmentId = getAssignmentIdFromURL();
+  //Dispaly error if ID not found:
+  if (!currentAssignmentId) 
+   {
+    console.error("Error: No assignment ID found in URL.");
+    return;
+   };
+   //fetch:
+   try 
+   {
+    const [assignmentsResponse, commentsResponse] = await Promise.all([
+      fetch("assignments.json"),
+      fetch("comments.json")
+    ]);
+    const assignments = await assignmentsResponse.json();
+    const commentsData = await commentsResponse.json();
+    //find correct assignment and comments:
+    const assignment = assignments.find(a => String(a.id) === String(currentAssignmentId));
+    currentComments = commentsData[currentAssignmentId] || [];
+    //if assignment found call render, show assignemnt details and initial comments:
+    if (assignment) {
+      renderAssignmentDetails(assignment);  
+      renderComments();
+      //enable adding comments:                
+      commentForm.addEventListener("submit", handleAddComment);
+    } else {
+      //Display error if assignment not found:
+      console.error("Error: Assignment not found for ID " + currentAssignmentId);
+    }
+  }
+  //handeling error:
+  catch (error) 
+  {
+    console.error("Error loading data:", error);
+  }
 }
-
 // --- Initial Page Load ---
 initializePage();

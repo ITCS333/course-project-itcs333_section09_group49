@@ -17,8 +17,10 @@ let assignments = [];
 
 // --- Element Selections ---
 // TODO: Select the assignment form ('#assignment-form').
+const assignmentForm = document.getElementById("assignment-form");
 
 // TODO: Select the assignments table body ('#assignments-tbody').
+const  assignmentsTableBody = document.getElementById("assignments-tbody");
 
 // --- Functions ---
 
@@ -32,10 +34,38 @@ let assignments = [];
  * - An "Edit" button with class "edit-btn" and `data-id="${id}"`.
  * - A "Delete" button with class "delete-btn" and `data-id="${id}"`.
  */
-function createAssignmentRow(assignment) {
-  // ... your implementation here ...
+function createAssignmentRow(assignment)
+{
+  //create table row:
+  const tr = document.createElement("tr");
+  //create td for title and add it to tr:
+  const titleTd = document.createElement("td");
+  titleTd.textContent = assignment.title;
+  tr.appendChild(titleTd);
+  //create td for due date and add it to tr:
+  const dueDateTd = document.createElement("td");
+  dueDateTd.textContent = assignment.dueDate;
+  tr.appendChild(dueDateTd);
+  //create td for buttons:
+  const twoButtons = document.createElement("td");
+  //Edit button:
+  const editButton = document.createElement("button");
+  editButton.textContent = "Edit";
+  editButton.className = "edit-btn";
+  editButton.setAttribute("data-id", assignment.id);
+  //Delete button:
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  deleteButton.className = "delete-btn";
+  deleteButton.setAttribute("data-id", assignment.id);
+  // add edit and delete buttons to table data:
+  twoButtons.appendChild(editButton);
+  twoButtons.appendChild(deleteButton);
+  //add edit and delete buttons to table row:
+  tr.appendChild(twoButtons);
+  //return table row:
+  return tr;
 }
-
 /**
  * TODO: Implement the renderTable function.
  * It should:
@@ -44,10 +74,18 @@ function createAssignmentRow(assignment) {
  * 3. For each assignment, call `createAssignmentRow()`, and
  * append the resulting <tr> to `assignmentsTableBody`.
  */
-function renderTable() {
-  // ... your implementation here ...
+function renderTable()
+{
+  //clear assignmentsTableBody:
+  assignmentsTableBody.innerHTML = "";
+  //loop through assignments:
+  assignments.forEach(assignment =>
+    {
+     //create and append row for each assignment:
+     const row = createAssignmentRow(assignment);
+     assignmentsTableBody.appendChild(row);
+    });
 }
-
 /**
  * TODO: Implement the handleAddAssignment function.
  * This is the event handler for the form's 'submit' event.
@@ -59,10 +97,34 @@ function renderTable() {
  * 5. Call `renderTable()` to refresh the list.
  * 6. Reset the form.
  */
-function handleAddAssignment(event) {
-  // ... your implementation here ...
+function handleAddAssignment(event)
+{
+  //prevent default submit:
+  event.preventDefault();
+  //Get values from title, description, due date, and files inputs:
+  const titleInput = document.getElementById("assignment-title");
+  const descriptionInput = document.getElementById("assignment-description");
+  const dueDateInput = document.getElementById("assignment-due-date");
+  const filesInput = document.getElementById("assignment-files");
+  const title = titleInput.value;
+  const description = descriptionInput.value;
+  const dueDate = dueDateInput.value;
+  const files = filesInput.files;
+  //create new assignment object with unique ID:
+   const newAssignment ={
+    id: `asg_${Date.now()}`,
+    title: title,
+    description: description,
+    dueDate: dueDate,
+    files: files
+  };
+  //add new assignment (push):
+  assignments.push(newAssignment);
+  //refresh the list:
+   renderTable();
+  //Reset form:
+  event.target.reset();
 }
-
 /**
  * TODO: Implement the handleTableClick function.
  * This is an event listener on the `assignmentsTableBody` (for delegation).
@@ -73,10 +135,18 @@ function handleAddAssignment(event) {
  * with the matching ID (in-memory only).
  * 4. Call `renderTable()` to refresh the list.
  */
-function handleTableClick(event) {
-  // ... your implementation here ...
+function handleTableClick(event)
+{
+  //Check if target is clicked and  get data-id if so:
+  if (event.target.classList.contains("delete-btn"))
+    {
+     const id = event.target.getAttribute("data-id");
+     //filtering out assignment to update:
+     assignments = assignments.filter(assignment => assignment.id !== id);
+     //refresh list:
+     renderTable();
+    }
 }
-
 /**
  * TODO: Implement the loadAndInitialize function.
  * This function needs to be 'async'.
@@ -87,10 +157,19 @@ function handleTableClick(event) {
  * 4. Add the 'submit' event listener to `assignmentForm` (calls `handleAddAssignment`).
  * 5. Add the 'click' event listener to `assignmentsTableBody` (calls `handleTableClick`).
  */
-async function loadAndInitialize() {
-  // ... your implementation here ...
+async function loadAndInitialize()
+{
+  //Get data using fetch():
+   const response = await fetch("assignments.json");
+  //parse response and store it in assignments array:
+   assignments = await response.json();
+  //call renderTable:
+   renderTable();
+  //submit event listener:
+  assignmentForm.addEventListener("submit", handleAddAssignment);
+  //clik event listener:
+  assignmentsTableBody.addEventListener("click", handleTableClick);
 }
-
 // --- Initial Page Load ---
 // Call the main async function to start the application.
 loadAndInitialize();
