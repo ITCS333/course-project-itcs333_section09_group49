@@ -1,9 +1,7 @@
 <!--
-  Requirement: Create the Dedicated Page for a Single Resource
-
-  Instructions:
-  This page displays the details for one resource and allows for discussion.
+  Resource Detail Page (Student View)
 -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,53 +10,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resource Details</title>
 
-    <!-- CSS FRAMEWORKS -->
+    <!-- CSS FRAMEWORKS (Optional) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pico-css@1.5.10/dist/pico.min.css">
 
-    <!-- CUSTOM CSS FILES -->
+    <!-- CUSTOM CSS (Optional) -->
+    <style>
+        main {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            padding-top: 20px;
+        }
 
-    <!-- FONTS -->
+        article {
+            margin-bottom: 20px;
+        }
+    </style>
 
+    <!-- JS -->
+    <script src="details.js" defer></script>
 </head>
 
 <body>
+
     <header>
-        <h1>Chapter 1 Notes</h1> <!-- Dummy title -->
+        <h1 id="resource-title">Loading...</h1>
     </header>
+
     <main>
+
         <!-- Section 1: Resource Information -->
         <article>
-            <p>Comprehensive notes covering HTML structure, basic tags, and CSS introduction including selectors and box
-                model.</p> <!-- Dummy description -->
-            <a href="https://example.com" target="_blank">Access Resource Material</a> <!-- Dummy link -->
+            <p id="resource-description"></p>
+
+            <a id="resource-link" href="#" target="_blank">
+                Access Resource Material
+            </a>
         </article>
 
         <!-- Section 2: Discussion Forum -->
         <section id="discussion-forum">
             <h2>Discussion</h2>
-            <!-- Subsection 2.1: Existing Comments -->
-            <div>
-                <article>
-                    <p>This was very helpful, thanks!</p> <!-- Dummy comment -->
-                    <footer>Posted by: Jane Doe</footer> <!-- Dummy author -->
-                </article>
 
-                <article>
-                    <p>Could you explain more about the box model?</p> <!-- Dummy comment -->
-                    <footer>Posted by: John Smith</footer> <!-- Dummy author -->
-                </article>
+            <!-- Comments List -->
+            <div id="comment-list">
+                <!-- JS will insert comments here -->
             </div>
 
-            <!-- Subsection 2.2: Add a Comment Form -->
-            <form action="#">
+            <!-- Add a Comment Form -->
+            <form id="comment-form">
                 <fieldset>
                     <legend>Leave a Comment</legend>
+
                     <label for="new-comment">Comment:</label>
                     <textarea id="new-comment" required></textarea>
+
                     <button type="submit">Post Comment</button>
                 </fieldset>
             </form>
+
         </section>
+
     </main>
+
 </body>
 
 </html>

@@ -1,38 +1,54 @@
 <!--
-  Requirement: Create the Admin View for Course Resources
-
-  Instructions:
-  Fill in the HTML elements as described in the comments.
-  This page allows the teacher (admin) to perform full CRUD operations on course resources.
+  Admin View - Course Resources
+  This page allows the teacher/admin to manage all course resources (CRUD).
 -->
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Resources</title>
 
-    <!-- CSS FRAMEWORKS -->
+    <!-- CSS Framework (optional) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pico-css@1.5.10/dist/pico.min.css">
 
-    <!-- CUSTOM CSS FILES -->
+    <!-- Custom CSS (optional) -->
+    <style>
+        main {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            padding-top: 20px;
+        }
+        table {
+            width: 100%;
+        }
+        #add-resource {
+            margin-top: 15px;
+        }
+    </style>
 
-    <!-- FONTS -->
-
+    <!-- Link JS -->
+    <script src="admin.js" defer></script>
 </head>
 
 <body>
+
     <header>
         <h1>Manage Course Resources</h1>
     </header>
 
     <main>
-        <!-- Section 1: Add/Edit Resource Form -->
+
+        <!-- Section 1: Add New Resource Form -->
         <section>
             <h2>Add a New Resource</h2>
-            <form id="resource-form" action="#">
+
+            <form id="resource-form">
                 <fieldset>
                     <legend>Resource Details</legend>
+
                     <label for="resource-title">Title:</label>
                     <input id="resource-title" type="text" required>
 
@@ -47,10 +63,10 @@
             </form>
         </section>
 
-
         <!-- Section 2: Existing Resources List -->
         <section>
             <h2>Existing Resources</h2>
+
             <table id="resources-table">
                 <thead>
                     <tr>
@@ -59,35 +75,15 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>Chapter 1 Notes</td> <!-- Dummy title -->
-                        <td>Introduction to HTML and CSS basics</td> <!-- Dummy description -->
-                        <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>CSS Flexbox Guide</td> <!-- Dummy title -->
-                        <td>Complete guide to CSS Flexbox layout</td> <!-- Dummy description -->
-                        <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>JavaScript Tutorial</td> <!-- Dummy title -->
-                        <td>Beginner JavaScript programming concepts</td> <!-- Dummy description -->
-                        <td>
-                            <button>Edit</button>
-                            <button>Delete</button>
-                        </td>
-                    </tr>
+
+                <!-- REQUIRED: tbody must have id="resources-tbody" -->
+                <tbody id="resources-tbody">
+                    <!-- JavaScript will populate the rows here -->
                 </tbody>
             </table>
         </section>
-    </main>
-</body>
 
+    </main>
+
+</body>
 </html>

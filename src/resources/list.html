@@ -1,51 +1,48 @@
 <!--
-  Requirement: Create the Student View for Course Resources
-
-  Instructions:
-  This page is a read-only view for students to see all available course materials.
-  Each resource should link to a dedicated detail page.
+  Student View - Course Resources (Read Only)
 -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
      <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Resources</title>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Course Resources</title>
 
-    <!-- CSS FRAMEWORKS -->
+     <!-- CSS FRAMEWORK (Optional) -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pico-css@1.5.10/dist/pico.min.css">
 
-    <!-- CUSTOM CSS FILES -->
+     <!-- CUSTOM CSS (Optional) -->
+     <style>
+        main {
+            width: 90%;
+            max-width: 900px;
+            margin: auto;
+            padding-top: 20px;
+        }
 
-    <!-- FONTS -->
+        article {
+            margin-bottom: 20px;
+        }
+     </style>
 
+     <!-- JS -->
+     <script src="../resources/list.js" defer></script>
 </head>
+
 <body>
 
  <header>
-        <h1>Course Resources</h1>
-    </header>
+     <h1>Course Resources</h1>
+ </header>
 
-c     <main>
-     <section>
-            <article>
-                <h2>Chapter 1 Notes</h2> <!-- Dummy title -->
-                <p>Introduction to HTML and CSS basics including tags, selectors, and box model.</p> <!-- Dummy description -->
-                <a href="resource-detail.html">View Resource & Discussion</a>  <!-- For now, the 'href' can be "resource-detail.html". -->
-            </article>
-
-            <article>
-                <h2>CSS Flexbox Guide</h2> <!-- Dummy title -->
-                <p>Complete guide to CSS Flexbox layout with examples and best practices.</p> <!-- Dummy description -->
-                <a href="resource-detail.html">View Resource & Discussion</a>  <!-- For now, the 'href' can be "resource-detail.html". -->
-            </article>
-
-            <article>
-                <h2>JavaScript Fundamentals</h2> <!-- Dummy title -->
-                <p>Basic JavaScript concepts including variables, functions, and DOM manipulation.</p> <!-- Dummy description -->
-                <a href="resource-detail.html">View Resource & Discussion</a>  <!-- For now, the 'href' can be "resource-detail.html". -->
-            </article>
-        </section>
-    </main>
+ <main>
+     <!-- REQUIRED SECTION ID -->
+     <section id="resource-list-section">
+         <!-- JavaScript (list.js) will insert resources here -->
+     </section>
+ </main>
 
 </body>
 </html>
+
