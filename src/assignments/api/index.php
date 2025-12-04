@@ -60,13 +60,13 @@ if ($_SERVER["REQUEST_METHOD"] === "OPTIONS")
 // ============================================================================
 
 // TODO: Include the database connection class
-
+require_once __DIR__ . '/config/Config.php';
 
 // TODO: Create database connection
 $host = "localhost";
-$user = "root"; 
-$password = ""; 
-$database = "course_page";
+$user = "admin"; 
+$password = "password123"; 
+$database = "course";
 try 
 {
     $db = new PDO("mysql:host=$host;dbname=$database", $user, $password);
@@ -253,18 +253,17 @@ function createAssignment($db, $data)
     }
     
     // TODO: Generate a unique assignment ID
-    $id = uniqid("assign_", true);
+    //$id = uniqid("assign_", true);
     
     // TODO: Handle the 'files' field
     $files = isset($data["files"]) ? json_encode($data["files"]) : json_encode([]);
     
     // TODO: Prepare INSERT query
-    $sql = "INSERT INTO assignments (id, title, description, due_date, files, created_at) 
-            VALUES (:id, :title, :description, :due_date, :files, NOW())";
+    $sql = "INSERT INTO assignments (title, description, due_date, files, created_at) 
+            VALUES (:title, :description, :due_date, :files, NOW())";
     
     // TODO: Bind all parameters
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(":id", $id);
     $stmt->bindValue(":title", $title);
     $stmt->bindValue(":description", $description);
     $stmt->bindValue(":due_date", $due_date);
@@ -274,7 +273,9 @@ function createAssignment($db, $data)
     $success = $stmt->execute();
     
     // TODO: Check if insert was successful
-    if ($success) {
+    if ($success)
+    {
+        $id = $db->lastInsertId();
         $createdAssignment = [
             "id" => $id,
             "title" => $title,
@@ -316,13 +317,12 @@ function updateAssignment($db, $data)
         echo json_encode(["error" => "Assignment ID is required"]);
         return;
     }
-    
     // TODO: Store assignment ID in variable
     $id = $data["id"];
     
     // TODO: Check if assignment exists
     $checkStmt = $db->prepare("SELECT * FROM assignments WHERE id = :id");
-    $checkStmt->bindValue(":id", $id, PDO::PARAM_STR);
+    $checkStmt->bindValue(":id", $id, PDO::PARAM_INT);
     $checkStmt->execute();
     $existing = $checkStmt->fetch(PDO::FETCH_ASSOC);
     if (!$existing)
@@ -364,7 +364,6 @@ function updateAssignment($db, $data)
         echo json_encode(["error" => "No fields provided to update"]);
         return;
     }
-}
     
     // TODO: Complete the UPDATE query
     $sql = "UPDATE assignments SET " . implode(", ", $fields) . ", updated_at = NOW() WHERE id = :id";
@@ -377,7 +376,7 @@ function updateAssignment($db, $data)
     {
         $stmt->bindValue($key, $value);
     }
-    $stmt->bindValue(":id", $id, PDO::PARAM_STR);
+    $stmt->bindValue(":id", $id, PDO::PARAM_INT);
     
     // TODO: Execute the statement
     $stmt->execute();
@@ -389,6 +388,7 @@ function updateAssignment($db, $data)
     
     // TODO: If no rows affected, return appropriate message
     echo json_encode(["success" => false, "message" => "No changes made to the assignment"]);
+}
 }
 
 
@@ -414,7 +414,7 @@ function deleteAssignment($db, $assignmentId)
     
     // TODO: Check if assignment exists
     $checkStmt = $db->prepare("SELECT * FROM assignments WHERE id = :id");
-    $checkStmt->bindValue(":id", $assignmentId, PDO::PARAM_STR);
+    $checkStmt->bindValue(":id", $assignmentId, PDO::PARAM_INT);
     $checkStmt->execute();
     $assignment = $checkStmt->fetch(PDO::FETCH_ASSOC);
     if (!$assignment)
@@ -426,7 +426,7 @@ function deleteAssignment($db, $assignmentId)
     
     // TODO: Delete associated comments first (due to foreign key constraint)
     $deleteComments = $db->prepare("DELETE FROM comments WHERE assignment_id = :id");
-    $deleteComments->bindValue(":id", $assignmentId, PDO::PARAM_STR);
+    $deleteComments->bindValue(":id", $assignmentId, PDO::PARAM_INT);
     $deleteComments->execute();
     
     // TODO: Prepare DELETE query for assignment
@@ -434,7 +434,7 @@ function deleteAssignment($db, $assignmentId)
     
     // TODO: Bind the :id parameter
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(":id", $assignmentId, PDO::PARAM_STR);
+    $stmt->bindValue(":id", $assignmentId, PDO::PARAM_INT);
     
     // TODO: Execute the statement
     $success = $stmt->execute();
@@ -480,7 +480,7 @@ function getCommentsByAssignment($db, $assignmentId)
     
     // TODO: Bind the :assignment_id parameter
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(":assignment_id", $assignmentId, PDO::PARAM_STR);
+    $stmt->bindValue(":assignment_id", $assignmentId, PDO::PARAM_INT);
     
     // TODO: Execute the statement
     $stmt->execute();
@@ -530,7 +530,7 @@ function createComment($db, $data)
     
     // TODO: Verify that the assignment exists
     $checkStmt = $db->prepare("SELECT id FROM assignments WHERE id = :id");
-    $checkStmt->bindValue(":id", $assignmentId, PDO::PARAM_STR);
+    $checkStmt->bindValue(":id", $assignmentId, PDO::PARAM_INT);
     $checkStmt->execute();
     if (!$checkStmt->fetch())
     {
@@ -545,7 +545,7 @@ function createComment($db, $data)
     
     // TODO: Bind all parameters
     $stmt = $db->prepare($sql);
-    $stmt->bindValue(":assignment_id", $assignmentId, PDO::PARAM_STR);
+    $stmt->bindValue(":assignment_id", $assignmentId, PDO::PARAM_INT);
     $stmt->bindValue(":author", $author, PDO::PARAM_STR);
     $stmt->bindValue(":text", $text, PDO::PARAM_STR);
     

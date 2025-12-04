@@ -12,7 +12,7 @@
 */
 // --- Element Selections ---
 // TODO: Select the section for the assignment list ('#assignment-list-section').
-const assignment = document.getElementById("assignment-list-section");
+const assignmentListSection = document.getElementById("assignment-list-section");
 // --- Functions ---
 /**
  * TODO: Implement the createAssignmentArticle function.
