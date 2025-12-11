@@ -60,7 +60,7 @@ if (!isset($_SESSION['user_id'])) {
     <div class="card">
         <h3>Resources</h3>
         <p>Access learning materials, documents, and study resources.</p>
-        <a href="#"><button>View Resources</button></a>
+        <a href="../resources/list.php"><button>View Resources</button></a>
     </div>
 
     <div class="card">
@@ -72,12 +72,13 @@ if (!isset($_SESSION['user_id'])) {
     <div class="card">
         <h3>Assignments</h3>
         <p>View and submit your assignments and projects.</p>
-        <a href="#"><button>View Assignments</button></a>
+        <a href="../assignments/list.php"><button>View Assignments</button></a>
     </div>
 
     <div class="card">
         <h3>General Discussion Boards</h3>
         <p>Participate in course discussions and ask questions.</p>
+        <p>extra task (Not implemented)</p>
         <a href="#"><button>Join Discussion</button></a>
     </div>
     <?php endif; ?>

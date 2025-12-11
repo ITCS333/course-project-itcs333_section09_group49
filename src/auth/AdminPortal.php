@@ -155,7 +155,7 @@ if ($action === 'students') {
  <div class="card">
         <h3>Resources</h3>
         <p>Manage and organize all learning resources.</p>
-        <a href="#"><button>Manage Resources</button></a>
+        <a href="../resources/admin.php"><button>Manage Resources</button></a>
     </div>
 
     <div class="card">
@@ -167,12 +167,13 @@ if ($action === 'students') {
     <div class="card">
         <h3>Assignments</h3>
         <p>Create and manage assignments and grading.</p>
-        <a href="#"><button>Manage Assignments</button></a>
+        <a href="../assignments/admin.php"><button>Manage Assignments</button></a>
     </div>
 
     <div class="card">
         <h3>General Discussion Boards</h3>
         <p>Moderate and manage all discussion boards.</p>
+        <p>extra task (Not implemented)</p>
         <a href="#"><button>Manage Discussions</button></a>
     </div>
     <?php endif; ?>
