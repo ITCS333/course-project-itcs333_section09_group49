@@ -5,6 +5,16 @@
   Fill in the HTML elements as described in the comments.
   This page allows the teacher (admin) to perform full CRUD operations on course assignments.
 -->
+
+<?php
+require_once __DIR__ . "/../../config/Config.php";
+
+if (!isLoggedIn() || !isAdmin()) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

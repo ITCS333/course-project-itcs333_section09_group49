@@ -5,6 +5,16 @@
   This page is a read-only view for students to see all course assignments.
   Each assignment should link to its dedicated detail page.
 -->
+
+<?php
+require_once __DIR__ . "/../../config/Config.php";
+
+if (!isLoggedIn() || !isStudent()) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 

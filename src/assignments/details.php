@@ -4,6 +4,16 @@
   Instructions:
   This page displays the full details for one assignment and allows for discussion.
 -->
+
+<?php
+require_once __DIR__ . "/../../config/Config.php";
+
+if (!isLoggedIn()) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
