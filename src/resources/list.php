@@ -1,6 +1,14 @@
 <!--
   Student View - Course Resources (Read Only)
 -->
+<?php
+require_once __DIR__ . "/../../config/Config.php";
+
+if (!isLoggedIn() || !isStudent()) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,15 +36,28 @@
 
      <!-- JS -->
      <script src="../resources/list.js" defer></script>
+     <link rel="stylesheet" href="../common/css/background.css">
+<link rel="stylesheet" href="../common/css/weekly-list.css">
+
+<script src="../common/js/background.js"></script>
+<script src="../common/js/goBackButton.js" defer></script>
+<script src="list.js" defer></script>
+
 </head>
 
 <body>
+<div class="bg-animation">
+    <div class="neural-network" id="neuralNetwork"></div>
+    <div class="particles" id="particles"></div>
+</div>
 
  <header>
+        <button id="go-back-btn">⮜</button>
      <h1>Course Resources</h1>
  </header>
 
  <main>
+    
      <!-- REQUIRED SECTION ID -->
      <section id="resource-list-section">
          <!-- JavaScript (list.js) will insert resources here -->
