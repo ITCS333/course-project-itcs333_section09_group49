@@ -25,7 +25,12 @@
 ## A link to your live, hosted application on Replit.
 https://course-page.replit.app
 
-## 📋 Task Assignment
-Sample data in order to test
-Username -> "admin" Password -> "password"
-Username -> "student1" Password -> "password"
+## 📋 Task Assignment – Sample Test Credentials
+
+Use the following credentials to test the system:
+
+| Role     | Username  | Password |
+|----------|-----------|----------|
+| Admin    | admin     | password |
+| Student  | student1  | password |
+
