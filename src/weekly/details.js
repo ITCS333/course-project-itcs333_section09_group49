@@ -1,117 +1,321 @@
-/*
-  Requirement: Populate the weekly detail page and discussion forum.
 
-  Instructions:
-  1. Link this file to `details.html` using:
-     <script src="details.js" defer></script>
 
-  2. In `details.html`, add the following IDs:
-     - To the <h1>: `id="week-title"`
-     - To the start date <p>: `id="week-start-date"`
-     - To the description <p>: `id="week-description"`
-     - To the "Exercises & Resources" <ul>: `id="week-links-list"`
-     - To the <div> for comments: `id="comment-list"`
-     - To the "Ask a Question" <form>: `id="comment-form"`
-     - To the <textarea>: `id="new-comment-text"`
 
-  3. Implement the TODOs below.
-*/
-
-// --- Global Data Store ---
-// These will hold the data related to *this* specific week.
 let currentWeekId = null;
 let currentComments = [];
+let weekData = null;
 
-// --- Element Selections ---
-// TODO: Select all the elements you added IDs for in step 2.
 
-// --- Functions ---
+const weekTitle = document.getElementById("week-title");
+const weekStartDate = document.getElementById("week-start-date");
+const weekDescription = document.getElementById("week-description");
+const weekLinksList = document.getElementById("week-links-list");
+const commentList = document.getElementById("comment-list");
+const commentForm = document.getElementById("comment-form");
+const newCommentText = document.getElementById("new-comment-text");
 
-/**
- * TODO: Implement the getWeekIdFromURL function.
- * It should:
- * 1. Get the query string from `window.location.search`.
- * 2. Use the `URLSearchParams` object to get the value of the 'id' parameter.
- * 3. Return the id.
- */
+
+const cache = {
+    week: null,
+    comments: null,
+    timestamp: 0,
+    CACHE_DURATION: 30000,
+
+    setWeek(data) {
+        this.week = data;
+        this.timestamp = Date.now();
+    },
+
+    getWeek() {
+        if (this.week && Date.now() - this.timestamp < this.CACHE_DURATION) {
+            return this.week;
+        }
+        return null;
+    },
+
+    clear() {
+        this.week = null;
+        this.comments = null;
+        this.timestamp = 0;
+    }
+};
+
+
 function getWeekIdFromURL() {
-  // ... your implementation here ...
+    return new URLSearchParams(window.location.search).get("id");
 }
 
-/**
- * TODO: Implement the renderWeekDetails function.
- * It takes one week object.
- * It should:
- * 1. Set the `textContent` of `weekTitle` to the week's title.
- * 2. Set the `textContent` of `weekStartDate` to "Starts on: " + week's startDate.
- * 3. Set the `textContent` of `weekDescription`.
- * 4. Clear `weekLinksList` and then create and append `<li><a href="...">...</a></li>`
- * for each link in the week's 'links' array. The link's `href` and `textContent`
- * should both be the link URL.
- */
+function formatDateTime(date) {
+    const d = new Date(date);
+    return `${d.getMonth() + 1}/${d.getDate()} ${d.getHours()}:${d.getMinutes().toString().padStart(2, '0')}`;
+}
+
+function getInitials(name = "") {
+    if (!name) return "U";
+    const parts = name.trim().split(" ");
+    return ((parts[0]?.[0] || "") + (parts[1]?.[0] || "")).toUpperCase();
+}
+
+function escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+
+async function deleteComment(id) {
+    try {
+        const res = await fetch(`./api/index.php?action=delete_comment&id=${id}`, {
+            method: "DELETE"
+        });
+        const data = await res.json();
+        return data.success;
+    } catch (e) {
+        console.error("Delete API failed:", e);
+        return false;
+    }
+}
+
+
 function renderWeekDetails(week) {
-  // ... your implementation here ...
+    requestAnimationFrame(() => {
+        weekTitle.textContent = week.title || "";
+        weekStartDate.textContent = week.start_date ? `Starts on: ${week.start_date}` : "";
+        weekDescription.textContent = week.description || "";
+
+        if (Array.isArray(week.links) && week.links.length > 0) {
+            const fragment = document.createDocumentFragment();
+            week.links.forEach(link => {
+                const li = document.createElement("li");
+                const a = document.createElement("a");
+                a.href = link;
+                a.target = "_blank";
+                a.textContent = link.length > 50 ? link.substring(0, 50) + "..." : link;
+                li.appendChild(a);
+                fragment.appendChild(li);
+            });
+            weekLinksList.innerHTML = "";
+            weekLinksList.appendChild(fragment);
+        } else {
+            weekLinksList.innerHTML = "";
+        }
+    });
 }
 
-/**
- * TODO: Implement the createCommentArticle function.
- * It takes one comment object {author, text}.
- * It should return an <article> element matching the structure in `details.html`.
- * (e.g., an <article> containing a <p> and a <footer>).
- */
-function createCommentArticle(comment) {
-  // ... your implementation here ...
+
+function createReplyHTML(reply) {
+    return `
+        <div class="reply">
+           <div class="reply-header">
+    <div class="reply-header-left">
+        <div class="reply-icon">${getInitials(reply.username)}</div>
+        <div class="reply-author">${escapeHtml(reply.username)}</div>
+        <div class="reply-timestamp">${formatDateTime(reply.created_at)}</div>
+    </div>
+
+    ${window.IS_ADMIN ? `<button class="delete-reply-btn" data-id="${reply.id}">🗑</button>` : ""}
+</div>
+
+            <p>${escapeHtml(reply.comment_text)}</p>
+        </div>
+    `;
 }
 
-/**
- * TODO: Implement the renderComments function.
- * It should:
- * 1. Clear the `commentList`.
- * 2. Loop through the global `currentComments` array.
- * 3. For each comment, call `createCommentArticle()`, and
- * append the resulting <article> to `commentList`.
- */
+
+function createCommentElement(comment) {
+    const article = document.createElement("article");
+    article.className = "comment";
+    article.dataset.commentId = comment.id;
+
+    article.innerHTML = `
+<div class="comment-header">
+    <div class="comment-header-left">
+        <div class="comment-icon">${getInitials(comment.username)}</div>
+        <div class="comment-author">${escapeHtml(comment.username)}</div>
+        <div class="comment-timestamp">${formatDateTime(comment.created_at)}</div>
+    </div>
+
+    ${window.IS_ADMIN ? `<button class="delete-comment-btn" data-id="${comment.id}">🗑</button>` : ""}
+</div>
+
+
+        <p>${escapeHtml(comment.comment_text)}</p>
+
+        <div class="nested-replies" ${comment.replies?.length ? "" : 'style="display:none"'} >
+            ${comment.replies?.map(r => createReplyHTML(r)).join("") || ""}
+        </div>
+
+        <form class="reply-form" data-comment-id="${comment.id}">
+            <textarea class="reply-textarea" rows="2" placeholder="Write a reply..." required></textarea>
+            <button type="submit" class="reply-btn">Send</button>
+        </form>
+    `;
+
+    const replyForm = article.querySelector(".reply-form");
+    replyForm.addEventListener("submit", (e) => handleReplySubmit(e, comment.id));
+
+    return article;
+}
+
+
 function renderComments() {
-  // ... your implementation here ...
+    commentList.innerHTML = "";
+
+    if (!currentComments.length) {
+        commentList.innerHTML = `<p style="text-align:center; opacity:0.7">No comments yet.</p>`;
+        return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    currentComments.forEach(c => fragment.appendChild(createCommentElement(c)));
+    commentList.appendChild(fragment);
 }
 
-/**
- * TODO: Implement the handleAddComment function.
- * This is the event handler for the `commentForm` 'submit' event.
- * It should:
- * 1. Prevent the form's default submission.
- * 2. Get the text from `newCommentText.value`.
- * 3. If the text is empty, return.
- * 4. Create a new comment object: { author: 'Student', text: commentText }
- * (For this exercise, 'Student' is a fine hardcoded author).
- * 5. Add the new comment to the global `currentComments` array (in-memory only).
- * 6. Call `renderComments()` to refresh the list.
- * 7. Clear the `newCommentText` textarea.
- */
-function handleAddComment(event) {
-  // ... your implementation here ...
+
+async function handleReplySubmit(e, parentCommentId) {
+    e.preventDefault();
+    const form = e.target;
+    const textArea = form.querySelector(".reply-textarea");
+    const text = textArea.value.trim();
+
+    if (!text) return;
+
+    const payload = {
+        week_id: Number(currentWeekId),
+        user_id: Number(window.LOGGED_IN_USER_ID),
+        comment_text: text,
+        parent_comment_id: parentCommentId
+    };
+
+    const res = await fetch("./api/index.php?action=weekly_comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.success) {
+        textArea.value = "";
+        await loadComments();
+    }
 }
 
-/**
- * TODO: Implement an `initializePage` function.
- * This function needs to be 'async'.
- * It should:
- * 1. Get the `currentWeekId` by calling `getWeekIdFromURL()`.
- * 2. If no ID is found, set `weekTitle.textContent = "Week not found."` and stop.
- * 3. `fetch` both 'weeks.json' and 'week-comments.json' (you can use `Promise.all`).
- * 4. Parse both JSON responses.
- * 5. Find the correct week from the weeks array using the `currentWeekId`.
- * 6. Get the correct comments array from the comments object using the `currentWeekId`.
- * Store this in the global `currentComments` variable. (If no comments exist, use an empty array).
- * 7. If the week is found:
- * - Call `renderWeekDetails()` with the week object.
- * - Call `renderComments()` to show the initial comments.
- * - Add the 'submit' event listener to `commentForm` (calls `handleAddComment`).
- * 8. If the week is not found, display an error in `weekTitle`.
- */
+
+async function handleAddComment(e) {
+    e.preventDefault();
+
+    const text = newCommentText.value.trim();
+    if (!text) return;
+
+    const payload = {
+        week_id: Number(currentWeekId),
+        user_id: Number(window.LOGGED_IN_USER_ID),
+        comment_text: text
+    };
+
+    const res = await fetch("./api/index.php?action=weekly_comments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (data.success) {
+        newCommentText.value = "";
+        await loadComments();
+    }
+}
+
+
+async function loadWeek() {
+    const cached = cache.getWeek();
+    if (cached) {
+        weekData = cached;
+        renderWeekDetails(weekData);
+        return;
+    }
+
+    const res = await fetch(`./api/index.php?id=${currentWeekId}`);
+    const data = await res.json();
+
+    if (data.success) {
+        weekData = data.data;
+        cache.setWeek(weekData);
+        renderWeekDetails(weekData);
+    }
+}
+
+
+async function loadComments() {
+    const res = await fetch(`./api/index.php?resource=weekly_comments&week_id=${currentWeekId}`);
+    const data = await res.json();
+
+    if (!data.success) {
+        currentComments = [];
+        renderComments();
+        return;
+    }
+
+    const flat = data.data;
+    const map = new Map();
+    flat.forEach(c => {
+        c.replies = [];
+        map.set(c.id, c);
+    });
+
+    const roots = [];
+    flat.forEach(c => {
+        if (c.parent_comment_id) {
+            map.get(c.parent_comment_id)?.replies.push(c);
+        } else roots.push(c);
+    });
+
+    currentComments = roots;
+    renderComments();
+}
+
+
+document.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("delete-comment-btn")) {
+        const id = e.target.dataset.id;
+        if (confirm("Delete this comment?")) {
+            if (await deleteComment(id)) loadComments();
+        }
+    }
+
+    if (e.target.classList.contains("delete-reply-btn")) {
+        const id = e.target.dataset.id;
+        if (confirm("Delete this reply?")) {
+            if (await deleteComment(id)) loadComments();
+        }
+    }
+});
+
+
 async function initializePage() {
-  // ... your implementation here ...
+    currentWeekId = getWeekIdFromURL();
+    if (!currentWeekId) {
+        weekTitle.textContent = "Week not found";
+        return;
+    }
+
+    await Promise.all([loadWeek(), loadComments()]);
+
+    if (!commentForm._attached) {
+        commentForm.addEventListener("submit", handleAddComment);
+        commentForm._attached = true;
+    }
 }
 
-// --- Initial Page Load ---
-initializePage();
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("go-back-btn");
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+        window.location.href = window.BACK_URL;
+    });
+});
+
+
+
+document.addEventListener("DOMContentLoaded", initializePage);

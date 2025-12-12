@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 21, 2025 at 10:39 PM
+-- Generation Time: Dec 11, 2025 at 10:29 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `course_management`
+-- Database: `course_page`
 --
 
 -- --------------------------------------------------------
@@ -193,20 +193,32 @@ CREATE TABLE `student_submissions` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `username` varchar(50) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `role` enum('admin','student','instructor') DEFAULT 'student'
+  `email` varchar(100) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
+  `role` enum('admin','student','instructor') DEFAULT 'student',
+  `student_id` varchar(20) DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `last_login` timestamp NULL DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `email`, `role`) VALUES
-(1, 'admin', '$2y$10$mjC/1MBgGkbAs.6dHeH5L.57Hg5BS1naLm2iwz/4uz2NSdRH7yRfy', 'admin@example.com', 'admin'),
-(2, 'student1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'student1@example.com', 'student'),
-(6, 'instructor1', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'instructor1@course.com', 'instructor');
-
+INSERT INTO `users` (`id`, `username`, `email`, `password_hash`, `role`, `student_id`, `created_by`, `created_at`, `updated_at`, `last_login`, `is_active`) VALUES
+(1, 'admin', 'admin@example.com', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'admin', NULL, NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(2, 'instructor1', 'instructor1@example.com', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'instructor', NULL, NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(3, 'student1', 'student1@example.com', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'student', 'STU2025001', NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(4, 'Ali Hassan', '202101234@stu.uob.edu.bh', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'student', '202101234', NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(5, 'Fatema Ahmed', '202205678@stu.uob.edu.bh', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'student', '202205678', NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(6, 'Mohamed Abdulla', '202311001@stu.uob.edu.bh', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'student', '202311001', NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(7, 'Noora Salman', '202100987@stu.uob.edu.bh', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'student', '202100987', NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(8, 'Zainab Ebrahim', '202207766@stu.uob.edu.bh', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'student', '202207766', NULL, '2025-12-08 21:23:40', '2025-12-10 21:59:40', NULL, 1),
+(9, 'admin2', 'admin2@example.com', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'admin', NULL, NULL, '2025-12-10 21:52:18', '2025-12-10 21:59:40', NULL, 1),
+(11, 'admin3', 'admin3@example.com', '$2y$10$Jw75dSZR/8Fwo3m6ewa6P.emvAxWcEw/buAx4209BQ6ORlqIcp4gO', 'admin', NULL, NULL, '2025-12-10 21:58:15', '2025-12-10 21:58:15', NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -233,17 +245,24 @@ CREATE TABLE `user_sessions` (
 
 CREATE TABLE `weekly_breakdown` (
   `id` int(11) NOT NULL,
-  `week_number` int(11) NOT NULL,
+  `week_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
-  `learning_objectives` text DEFAULT NULL,
-  `exercises` text DEFAULT NULL,
-  `resources` text DEFAULT NULL,
+  `links` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`links`)),
+  `start_date` date NOT NULL,
   `created_by` int(11) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `is_active` tinyint(1) DEFAULT 1
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `weekly_breakdown`
+--
+
+INSERT INTO `weekly_breakdown` (`id`, `week_id`, `title`, `description`, `links`, `start_date`, `created_by`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Week 1: Introduction to HTML', 'This week covers the fundamental building blocks of the web: HTML. We will explore semantic tags, document structure, and basic elements like headings, paragraphs, links, and images.', '[\"https:\\/\\/developer.mozilla.org\\/en-US\\/docs\\/Web\\/HTML\",\"https:\\/\\/www.w3schools.com\\/html\\/html_basic.asp\"]', '2025-10-27', 1, '2025-12-08 21:35:57', '2025-12-08 21:35:57'),
+(2, 2, 'Week 2: Introduction to CSS', 'Learn how to style your HTML documents. We will cover selectors, the box model, colors, fonts, and basic layouts.', '[\"https:\\/\\/developer.mozilla.org\\/en-US\\/docs\\/Web\\/CSS\",\"https:\\/\\/css-tricks.com\\/guides\\/beginner\\/\"]', '2025-11-03', 1, '2025-12-08 21:35:57', '2025-12-08 21:35:57'),
+(3, 3, 'Week 3: CSS Flexbox and Grid', 'A deep dive into modern CSS layout techniques. We will master Flexbox for 1D layouts and CSS Grid for 2D layouts.', '[\"https:\\/\\/css-tricks.com\\/snippets\\/css\\/a-guide-to-flexbox\\/\",\"https:\\/\\/css-tricks.com\\/snippets\\/css\\/complete-guide-grid\\/\"]', '2025-11-10', 1, '2025-12-08 21:35:57', '2025-12-08 21:35:57');
 
 -- --------------------------------------------------------
 
@@ -256,10 +275,18 @@ CREATE TABLE `weekly_comments` (
   `week_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `comment_text` text NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `is_active` tinyint(1) DEFAULT 1
+  `parent_comment_id` int(11) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `weekly_comments`
+--
+
+INSERT INTO `weekly_comments` (`id`, `week_id`, `user_id`, `comment_text`, `parent_comment_id`, `created_at`) VALUES
+(1, 1, 4, 'I\'m confused about the difference between <section> and <article>.', NULL, '2025-12-08 22:06:01'),
+(2, 1, 5, 'Are we allowed to use <b> and <i> tags, or should we always use <strong> and <em>?', NULL, '2025-12-08 22:06:01'),
+(3, 2, 4, 'The box model is tricky. Does the border count as part of the width?', NULL, '2025-12-08 22:06:01');
 
 --
 -- Indexes for dumped tables
@@ -362,7 +389,7 @@ ALTER TABLE `user_sessions`
 --
 ALTER TABLE `weekly_breakdown`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_week` (`week_number`),
+  ADD UNIQUE KEY `unique_week` (`week_id`),
   ADD KEY `created_by` (`created_by`);
 
 --
@@ -371,7 +398,8 @@ ALTER TABLE `weekly_breakdown`
 ALTER TABLE `weekly_comments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `week_id` (`week_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `parent_comment_id` (`parent_comment_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -435,7 +463,7 @@ ALTER TABLE `student_submissions`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `user_sessions`
@@ -447,13 +475,13 @@ ALTER TABLE `user_sessions`
 -- AUTO_INCREMENT for table `weekly_breakdown`
 --
 ALTER TABLE `weekly_breakdown`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `weekly_comments`
 --
 ALTER TABLE `weekly_comments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
 
 --
 -- Constraints for dumped tables
@@ -542,8 +570,9 @@ ALTER TABLE `weekly_breakdown`
 -- Constraints for table `weekly_comments`
 --
 ALTER TABLE `weekly_comments`
-  ADD CONSTRAINT `weekly_comments_ibfk_1` FOREIGN KEY (`week_id`) REFERENCES `weekly_breakdown` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `weekly_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `weekly_comments_ibfk_1` FOREIGN KEY (`week_id`) REFERENCES `weekly_breakdown` (`week_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `weekly_comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `weekly_comments_ibfk_3` FOREIGN KEY (`parent_comment_id`) REFERENCES `weekly_comments` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

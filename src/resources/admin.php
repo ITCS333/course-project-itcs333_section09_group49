@@ -2,12 +2,21 @@
   Admin View - Course Resources
   This page allows the teacher/admin to manage all course resources (CRUD).
 -->
+<?php
+require_once __DIR__ . "/../../config/Config.php";
+
+if (!isLoggedIn() || !isAdmin()) {
+    header("Location: ../auth/login.php");
+    exit();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
     <title>Manage Resources</title>
 
     <!-- CSS Framework (optional) -->
@@ -31,11 +40,23 @@
 
     <!-- Link JS -->
     <script src="admin.js" defer></script>
+    <link rel="stylesheet" href="../common/css/background.css">
+<link rel="stylesheet" href="../common/css/weekly-admin.css">
+<script src="../common/js/background.js"></script>
+<script src="../common/js/goBackButton.js" defer></script>
+<script src="admin.js" defer></script>
+
 </head>
 
 <body>
+<div class="bg-animation">
+    <div class="neural-network" id="neuralNetwork"></div>
+    <div class="particles" id="particles"></div>
+</div>
+
 
     <header>
+        <button id="go-back-btn">⮜</button>
         <h1>Manage Course Resources</h1>
     </header>
 
