@@ -110,7 +110,7 @@ if (!isLoggedIn() || !isAdmin()) {
                     </tr>-->
                 </tbody>
             </table>
-            <a href="list.html"><button type="button">Back</button></a>
+            <a href="list.php"><button type="button">Back</button></a>
         </section>
     </main>
 </body>

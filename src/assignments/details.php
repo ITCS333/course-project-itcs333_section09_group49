@@ -82,7 +82,7 @@ if (!isLoggedIn()) {
 
                     <button type="submit">Post Comment</button>
                 </fieldset>
-                <a href="list.html"><button type="button">Back</button></a>
+                <a href="list.php"><button type="button">Back</button></a>
             </form>
         </section>
     </main>

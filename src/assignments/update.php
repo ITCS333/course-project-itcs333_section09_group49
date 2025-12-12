@@ -57,7 +57,7 @@ if (!isLoggedIn() || !isAdmin())
 
         <div class="button-group">
             <button type="submit" id="save-edit-button">Update Assignment</button>
-            <button type="button" onclick="window.location.href='admin.html'">Cancel and Back</button>
+            <button type="button" onclick="window.location.href='admin.php'">Cancel and Back</button>
         </div>
     </fieldset>
 </form>
