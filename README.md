@@ -20,6 +20,12 @@
 | **Task 2** 📚             | MalakZakareya       | Course Resources & Materials            |
 | **Task 3** 📅             | manar-alshaikh      | Weekly Breakdown & Schedule             |
 | **Task 4** 📝             | Taqwa-Abdulla       | Assignments & Submissions               |
-| **Task 5** 💬             | Collaborative work  | General Discussion Boards               |
+| **Task 5** 💬             | -                   | General Discussion Boards               |
 
 ## A link to your live, hosted application on Replit.
+https://course-page.replit.app
+
+## 📋 Task Assignment
+Sample data in order to test
+Username -> "admin" Password -> "password"
+Username -> "student1" Password -> "password"

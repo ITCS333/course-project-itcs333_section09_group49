@@ -1,4 +1,11 @@
 <?php
+// Let PHP built-in server handle static files
+$requestUri = $_SERVER["REQUEST_URI"];
+$filePath = __DIR__ . parse_url($requestUri, PHP_URL_PATH);
+if (php_sapi_name() === 'cli-server' && is_file($filePath)) {
+    return false;
+}
+
 session_start();
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
@@ -86,6 +93,10 @@ switch ($path) {
         include __DIR__ . "/src/assignments/admin.html";
         break;
 
+    case "assignments/update":
+        include __DIR__ . "/src/assignments/update.html";
+        break;
+
 
     // ----------------------------------------------
     // ADMIN USERS PAGE
@@ -108,6 +119,16 @@ switch ($path) {
         include __DIR__ . "/src/weekly/api/index.php";
         break;
 
+    case "api/weekly/weeks":
+        header('Content-Type: application/json');
+        readfile(__DIR__ . "/src/weekly/api/weeks.json");
+        break;
+
+    case "api/weekly/comments":
+        header('Content-Type: application/json');
+        readfile(__DIR__ . "/src/weekly/api/comments.json");
+        break;
+
     case "api/resources":
         include __DIR__ . "/src/resources/api/index.php";
         break;
@@ -122,12 +143,39 @@ switch ($path) {
 
 
     // ----------------------------------------------
+    // DIRECT FILE API ROUTES (for JS file access)
+    // ----------------------------------------------
+
+    case "weekly/api/index.php":
+        include __DIR__ . "/src/weekly/api/index.php";
+        break;
+
+    case "weekly/api/weeks.json":
+        header('Content-Type: application/json');
+        readfile(__DIR__ . "/src/weekly/api/weeks.json");
+        break;
+
+    case "weekly/api/comments.json":
+        header('Content-Type: application/json');
+        readfile(__DIR__ . "/src/weekly/api/comments.json");
+        break;
+
+    case "resources/api/index.php":
+        include __DIR__ . "/src/resources/api/index.php";
+        break;
+
+    case "assignments/api/index.php":
+        include __DIR__ . "/src/assignments/api/index.php";
+        break;
+
+
+    // ----------------------------------------------
     // 404 ERROR
     // ----------------------------------------------
 
-    default:
-        http_response_code(404);
-        echo "<h1>404 - Page Not Found</h1>";
-        echo "<p>No route matches: {$path}</p>";
-        break;
+  default:
+    http_response_code(404);
+    include __DIR__ . "/src/errors/404.php";
+    break;
+
 }

@@ -16,7 +16,7 @@ const commentForm = document.querySelector("#comment-form");
 const newComment = document.querySelector("#new-comment-text");
 
 // API URL
-const API_URL = "./api/index.php";
+const API_URL = "/api/resources";
 
 function getResourceIdFromURL() {
   const params = new URLSearchParams(window.location.search);

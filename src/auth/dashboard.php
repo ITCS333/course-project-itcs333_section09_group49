@@ -1,10 +1,9 @@
 <?php
-session_start();
-include '../../config/Config.php';
+require_once __DIR__ . '/../../config/Config.php';
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: /login");
     exit();
 }
 ?>
@@ -15,9 +14,9 @@ if (!isset($_SESSION['user_id'])) {
         <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Course System</title>
-     <link rel="stylesheet" href="../common/css/background.css">
-        <link rel="stylesheet" href="../common/css/dashboard.css">
-         <script src="../common/js/background.js"></script>
+     <link rel="stylesheet" href="/src/common/css/background.css">
+        <link rel="stylesheet" href="/src/common/css/dashboard.css">
+         <script src="/src/common/js/background.js"></script>
 </head>
 <body>
     <div class="bg-animation">
@@ -31,10 +30,10 @@ if (!isset($_SESSION['user_id'])) {
 
 <div class="nav">
     <div class="nav-left">
-        <a href="dashboard.php">Dashboard</a>
+        <a href="/dashboard">Dashboard</a>
 
         <?php if (isAdmin()): ?>
-            <a href="AdminPortal.php">Admin Portal</a>
+            <a href="/admin">Admin Portal</a>
         <?php endif; ?>
 
         <?php if (isInstructor()): ?>
@@ -43,7 +42,7 @@ if (!isset($_SESSION['user_id'])) {
     </div>
 
     <div class="nav-right">
-        <a href="logout.php">Logout</a>
+        <a href="/logout">Logout</a>
     </div>
 </div>
 
@@ -60,19 +59,19 @@ if (!isset($_SESSION['user_id'])) {
     <div class="card">
         <h3>Resources</h3>
         <p>Access learning materials, documents, and study resources.</p>
-        <a href="../resources/list.php"><button>View Resources</button></a>
+        <a href="/resources/list"><button>View Resources</button></a>
     </div>
 
     <div class="card">
         <h3>Weekly Breakdown</h3>
         <p>Check out this week's learning schedule and topics.</p>
-        <a href="../weekly/list.php"><button>Go to Weekly</button></a>
+        <a href="/weekly/list"><button>Go to Weekly</button></a>
     </div>
 
     <div class="card">
         <h3>Assignments</h3>
         <p>View and submit your assignments and projects.</p>
-        <a href="../assignments/list.html"><button>View Assignments</button></a>
+        <a href="/assignments/list"><button>View Assignments</button></a>
     </div>
 
     <div class="card">

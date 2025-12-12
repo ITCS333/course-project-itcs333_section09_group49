@@ -65,26 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
 // DATABASE CONNECTION
 // ============================================================================
 
-// TODO: Include the database connection class
-require_once('../../config/Config.php');
+// Include the database connection
+require_once __DIR__ . '/../../../config/Config.php';
 
-// TODO: Create database connection
-$host = "localhost";
-$user = "admin";
-$password = "password123";
-$database = "course";
-
-// TODO: Set PDO to throw exceptions on errors
-try
-{
-    $db = new PDO("mysql:host=$host;dbname=$database",$user,$password);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-}
-catch(PDOException $error)
-{
-    http_response_code(500);
-    $res = ["error" => "Database connection failed: " . $error->getMessage()];
-}
+// Use the connection from Config.php
+$db = $conn;
 
 // ============================================================================
 // REQUEST PARSING
@@ -495,7 +480,7 @@ function deleteAssignment($db, $assignmentId)
     try{
     $db->beginTransaction();
     // TODO: Delete associated comments first (due to foreign key constraint)
-    $sqlDeleteComments = "DELETE FROM comments_assignment WHERE assignment_id = :id";
+    $sqlDeleteComments = "DELETE FROM assignment_comments WHERE assignment_id = :id";
     $stmtDeleteComments = $db->prepare($sqlDeleteComments);
     $stmtDeleteComments->bindValue(':id', $assignmentId, PDO::PARAM_INT);
     $stmtDeleteComments->execute();
@@ -567,7 +552,7 @@ function getCommentsByAssignment($db, $assignmentId)
         };
 
     // TODO: Prepare SQL query to select all comments for the assignment
-      $sql = "SELECT * FROM comments_assignment WHERE assignment_id = :id";
+      $sql = "SELECT * FROM assignment_comments WHERE assignment_id = :id";
       $stmt = $db->prepare($sql);
 
     // TODO: Bind the :assignment_id parameter
@@ -637,13 +622,12 @@ function createComment($db, $data)
         }
 
     // TODO: Prepare INSERT query for comment
-      $sql = "INSERT INTO comments_assignment (assignment_id, author, text) VALUES (:assignment_id, :author, :text)";
+      $sql = "INSERT INTO assignment_comments (assignment_id, comment_text) VALUES (:assignment_id, :comment_text)";
       $stmt = $db->prepare($sql);
 
     // TODO: Bind all parameters
       $stmt->bindValue(':assignment_id', $assignmentId, PDO::PARAM_INT);
-      $stmt->bindValue(':author', $author, PDO::PARAM_STR);
-      $stmt->bindValue(':text', $text, PDO::PARAM_STR);
+      $stmt->bindValue(':comment_text', $author . ': ' . $text, PDO::PARAM_STR);
 
     // TODO: Execute the statement
      $stmt->execute();
@@ -695,7 +679,7 @@ function deleteComment($db, $commentId)
         };
 
     // TODO: Check if comment exists
-      $checkStmt = $db->prepare("SELECT COUNT(*) FROM comments_assignment WHERE id = :id");
+      $checkStmt = $db->prepare("SELECT COUNT(*) FROM assignment_comments WHERE id = :id");
       $checkStmt->execute([':id' => $commentId]);
      if ($checkStmt->fetchColumn() == 0) 
         {
@@ -705,7 +689,7 @@ function deleteComment($db, $commentId)
     try 
     {
     // TODO: Prepare DELETE query
-    $sql = "DELETE FROM comments_assignment WHERE id = :id";
+    $sql = "DELETE FROM assignment_comments WHERE id = :id";
     $stmt = $db->prepare($sql);
 
     // TODO: Bind the :id parameter

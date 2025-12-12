@@ -1,0 +1,92 @@
+# ITCS333 Course Page - Team 49
+
+## Overview
+A web-based course management system for the ITCS333 Internet Software Development course. Built with PHP and PostgreSQL, it provides functionality for students and administrators to manage course content, weekly breakdowns, assignments, resources, and discussions.
+
+## Project Structure
+```
+.
+├── config/
+│   └── Config.php          # Database configuration and authentication helpers
+├── database/
+│   ├── course_page.sql     # Original MySQL schema
+│   └── schema_postgres.sql # PostgreSQL schema for Replit
+├── src/
+│   ├── admin/              # Admin user management
+│   ├── assignments/        # Assignment management
+│   ├── auth/               # Authentication (login, dashboard, admin portal)
+│   ├── common/             # Shared CSS and JS files
+│   ├── discussion/         # Discussion boards
+│   ├── errors/             # Error pages
+│   ├── resources/          # Course resources management
+│   └── weekly/             # Weekly breakdown management
+├── assets/                 # Fonts and images
+└── index.php               # Main router
+```
+
+## Tech Stack
+- **Backend**: PHP 8.2
+- **Database**: PostgreSQL (converted from MySQL)
+- **Frontend**: HTML, CSS, JavaScript with animated backgrounds
+
+## Running the Application
+The application runs on port 5000 using PHP's built-in development server:
+```bash
+php -S 0.0.0.0:5000
+```
+
+## Database
+Uses PostgreSQL with environment variables:
+- DATABASE_URL, PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE
+
+## Default Users
+- Admin: `admin` / `password123` (email: admin@example.com)
+- Instructor: `instructor1` / `password123`
+- Student: `student1` / `password123`
+
+## Key Routes
+- `/login` - Login page
+- `/dashboard` - User dashboard  
+- `/admin` - Admin portal
+- `/weekly/list` - Weekly breakdown list
+- `/weekly/details?id=X` - Weekly details page
+- `/weekly/admin` - Manage weekly content
+- `/resources/list` - Course resources
+- `/resources/details?id=X` - Resource details page
+- `/resources/admin` - Manage resources
+- `/assignments/list` - Assignments list
+- `/assignments/details?id=X` - Assignment details
+- `/assignments/admin` - Manage assignments
+- `/assignments/update?id=X` - Update assignment
+
+## API Routes
+- `/weekly/api/index.php` - Weekly API
+- `/resources/api/index.php` - Resources API
+- `/assignments/api/index.php` - Assignments API
+- `/api/auth` - Authentication API
+
+## Recent Changes
+- **2025-12-12**: Fixed assignment creation database issue
+  - Added missing `files` column to assignments table
+  - Made `created_by` column nullable to allow assignment creation
+- **2025-12-12**: Fixed static file serving in router
+  - Added static file handler to let PHP server serve CSS/JS/images directly
+  - Animated background now works on 404 error page and all pages
+- **2025-12-12**: Added instant form validation to Weekly admin
+  - Validates on blur and as-you-type (debounced)
+  - Date validation with year bounds (2020-2030)
+- **2025-12-12**: Fixed logout session handling
+  - Now checks if session already active before starting
+  - Fixed redirect path to use router
+- **2025-12-12**: Added animated background to all assignment pages
+- **2025-12-12**: Fixed PostgreSQL boolean comparison in resources API
+- **2025-12-12**: Fixed all path references across the codebase
+  - Converted all relative paths (../common/, ./api/) to absolute paths (/src/common/, /weekly/api/)
+  - Updated HTML back button links to use router paths
+  - Updated JS files to use absolute API paths
+  - Added router routes for API file access
+  - Added assignments/update route
+- **2025-12-12**: Migrated from MySQL to PostgreSQL for Replit compatibility
+- Updated Config.php to use environment variables for database connection
+- Fixed all include paths to use __DIR__ for proper routing
+- Fixed all CSS/JS resource paths to use absolute paths

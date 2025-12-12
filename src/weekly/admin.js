@@ -95,6 +95,17 @@ function validateField(input, type = "text") {
       showError(input, "Please select a date.");
       return false;
     }
+
+    const selectedDate = new Date(value);
+    const year = selectedDate.getFullYear();
+    const minYear = 2020;
+    const maxYear = 2030;
+
+    if (year < minYear || year > maxYear) {
+      showError(input, `Date must be between ${minYear} and ${maxYear}.`);
+      return false;
+    }
+
     clearError(input);
     return true;
   }
@@ -126,14 +137,12 @@ function validateForm(fields) {
   return valid;
 }
 
-
-
 function createWeekRow(week) {
   const row = document.createElement("tr");
 
   const titleCell = document.createElement("td");
   const link = document.createElement("a");
-  link.href = `./details.php?id=${week.id}`;
+  link.href = `/weekly/details?id=${week.id}`;
   link.textContent = week.title;
   link.className = "week-title-link";
   titleCell.appendChild(link);
@@ -160,14 +169,10 @@ function createWeekRow(week) {
   return row;
 }
 
-
-
 function renderTable() {
   weeksTableBody.innerHTML = "";
   weeks.forEach(week => weeksTableBody.appendChild(createWeekRow(week)));
 }
-
-
 
 async function handleAddWeek(event) {
   event.preventDefault();
@@ -203,7 +208,7 @@ async function handleAddWeek(event) {
   };
 
   try {
-    const res = await fetch("./api/index.php", {
+    const res = await fetch("/api/weekly", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -234,15 +239,13 @@ async function handleAddWeek(event) {
   }
 }
 
-
-
 function handleTableClick(event) {
   const target = event.target;
 
   if (target.classList.contains("delete-btn")) {
     const id = Number(target.dataset.id);
 
-    fetch(`./api/index.php?id=${id}`, { method: "DELETE" })
+    fetch(`/api/weekly?id=${id}`, { method: "DELETE" })
       .then(res => res.json())
       .then(result => {
         if (!result.success) {
@@ -274,8 +277,6 @@ function handleTableClick(event) {
   }
 }
 
-
-
 async function handleEditSubmit(event) {
   event.preventDefault();
 
@@ -287,7 +288,6 @@ async function handleEditSubmit(event) {
   ];
 
   if (!validateForm(fields)) return;
-
 
   const oldWeek = weeks.find(w => w.id === currentEditId);
 
@@ -304,7 +304,7 @@ async function handleEditSubmit(event) {
   };
 
   try {
-    const res = await fetch("./api/index.php", {
+    const res = await fetch("/api/weekly", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
@@ -357,7 +357,7 @@ async function importJsonWeeksOnce(jsonWeeks) {
   }
 
   try {
-    const res = await fetch("./api/index.php");
+    const res = await fetch("/api/weekly");
     const dbResult = await res.json();
 
     const existingWeeks = dbResult.success ? dbResult.data : [];
@@ -388,7 +388,7 @@ async function importJsonWeeksOnce(jsonWeeks) {
         links: w.links || []
       };
 
-      const insertRes = await fetch("./api/index.php", {
+      const insertRes = await fetch("/api/weekly", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
@@ -417,11 +417,11 @@ async function importJsonCommentsOnce() {
 
   try {
 
-    const res = await fetch("./api/comments.json");
+    const res = await fetch("/api/weekly/comments");
     const allComments = await res.json();
 
 
-    const usersRes = await fetch("./api/index.php?resource=users");
+    const usersRes = await fetch("/api/weekly?resource=users");
     const usersData = await usersRes.json();
 
     const users = usersData.success ? usersData.data : [];
@@ -453,7 +453,7 @@ async function importJsonCommentsOnce() {
         }
 
 
-        await fetch("./api/index.php?action=weekly_comments", {
+        await fetch("/api/weekly?action=weekly_comments", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -479,13 +479,13 @@ async function importJsonCommentsOnce() {
 
 async function loadAndInitialize() {
   try {
-    const response = await fetch("./api/weeks.json");
+    const response = await fetch("/api/weekly/weeks");
     const jsonWeeks = await response.json();
 
     await importJsonWeeksOnce(jsonWeeks);
     await importJsonCommentsOnce();
 
-    const res = await fetch("./api/index.php");
+    const res = await fetch("/api/weekly");
     const result = await res.json();
 
     if (result.success) {
@@ -508,6 +508,37 @@ async function loadAndInitialize() {
   editForm.addEventListener("submit", handleEditSubmit);
   weeksTableBody.addEventListener("click", handleTableClick);
   cancelEditBtn.addEventListener("click", closeEditModal);
+
+  // Add instant validation for add form fields
+  const titleInput = document.getElementById("week-title");
+  const dateInput = document.getElementById("week-start-date");
+  const descInput = document.getElementById("week-description");
+  const linksInput = document.getElementById("week-links");
+
+  titleInput.addEventListener("blur", () => validateField(titleInput, "text"));
+  titleInput.addEventListener("input", debounce(() => validateField(titleInput, "text")));
+
+  dateInput.addEventListener("blur", () => validateField(dateInput, "date"));
+  dateInput.addEventListener("change", () => validateField(dateInput, "date"));
+
+  descInput.addEventListener("blur", () => validateField(descInput, "text"));
+  descInput.addEventListener("input", debounce(() => validateField(descInput, "text")));
+
+  linksInput.addEventListener("blur", () => validateField(linksInput, "links"));
+  linksInput.addEventListener("input", debounce(() => validateField(linksInput, "links")));
+
+  // Add instant validation for edit form fields
+  editTitleInput.addEventListener("blur", () => validateField(editTitleInput, "text"));
+  editTitleInput.addEventListener("input", debounce(() => validateField(editTitleInput, "text")));
+
+  editStartDateInput.addEventListener("blur", () => validateField(editStartDateInput, "date"));
+  editStartDateInput.addEventListener("change", () => validateField(editStartDateInput, "date"));
+
+  editDescriptionInput.addEventListener("blur", () => validateField(editDescriptionInput, "text"));
+  editDescriptionInput.addEventListener("input", debounce(() => validateField(editDescriptionInput, "text")));
+
+  editLinksInput.addEventListener("blur", () => validateField(editLinksInput, "links"));
+  editLinksInput.addEventListener("input", debounce(() => validateField(editLinksInput, "links")));
 }
 
 loadAndInitialize();
@@ -517,6 +548,6 @@ document.addEventListener("DOMContentLoaded", () => {
   if (!btn) return;
 
   btn.addEventListener("click", () => {
-    window.location.href = "../auth/AdminPortal.php";
+    window.location.href = "/admin";
   });
 });

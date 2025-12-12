@@ -1,9 +1,8 @@
 <?php
-session_start();
-include '../../config/Config.php';
+require_once __DIR__ . '/../../config/Config.php';
 
 if (!isLoggedIn() || !isAdmin()) {
-    header("Location: login.php");
+    header("Location: /login");
     exit();
 }
 
@@ -119,11 +118,11 @@ if ($action === 'students') {
     <title>Admin Portal</title>
 
     <!-- NEON THEME -->
-    <link rel="stylesheet" href="../common/css/background.css">
-    <link rel="stylesheet" href="../common/css/adminPortal.css">
+    <link rel="stylesheet" href="/src/common/css/background.css">
+    <link rel="stylesheet" href="/src/common/css/adminPortal.css">
 
     <!-- JS Background -->
-    <script src="../common/js/background.js" defer></script>
+    <script src="/src/common/js/background.js" defer></script>
 </head>
 
 <body>
@@ -140,13 +139,13 @@ if ($action === 'students') {
 <!-- NAVIGATION -->
 <div class="nav">
     <div class="nav-left">
-        <a href="AdminPortal.php?action=dashboard">Dashboard</a>
-        <a href="AdminPortal.php?action=students">Students</a>
-        <a href="AdminPortal.php?action=password">Password</a>
+        <a href="/admin?action=dashboard">Dashboard</a>
+        <a href="/admin?action=students">Students</a>
+        <a href="/admin?action=password">Password</a>
     </div>
 
     <div class="nav-right">
-        <a href="logout.php">Logout</a>
+        <a href="/logout">Logout</a>
     </div>
 </div>
 
@@ -179,19 +178,19 @@ if ($action === 'students') {
  <div class="card">
         <h3>Resources</h3>
         <p>Manage and organize all learning resources.</p>
-        <a href="../resources/admin.php"><button>Manage Resources</button></a>
+        <a href="/resources/admin"><button>Manage Resources</button></a>
     </div>
 
     <div class="card">
         <h3>Weekly Breakdown</h3>
         <p>Create and manage weekly schedules and content.</p>
-        <a href="../weekly/admin.php"><button>Manage Weekly</button></a>
+        <a href="/weekly/admin"><button>Manage Weekly</button></a>
     </div>
 
     <div class="card">
         <h3>Assignments</h3>
         <p>Create and manage assignments and grading.</p>
-        <a href="../assignments/admin.html"><button>Manage Assignments</button></a>
+        <a href="/assignments/admin"><button>Manage Assignments</button></a>
     </div>
 
     <div class="card">

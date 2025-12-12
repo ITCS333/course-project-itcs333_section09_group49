@@ -1,17 +1,15 @@
 <?php
-include '../../config/Config.php';
+require_once __DIR__ . '/../../config/Config.php';
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-session_start();
-
 if (isset($_SESSION['user_id'])) {
     if ($_SESSION['role'] === 'admin') {
-        header("Location: AdminPortal.php");
+        header("Location: /admin");
         exit();
     } else {
-        header("Location: dashboard.php");
+        header("Location: /dashboard");
         exit();
     }
 }
@@ -41,10 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
 
             // REDIRECT based on role
             if ($user['role'] === 'admin') {
-                header("Location: AdminPortal.php");
+                header("Location: /admin");
                 exit();
             } else {
-                header("Location: dashboard.php");
+                header("Location: /dashboard");
                 exit();
             }
         } 
@@ -67,8 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Dev Course Homepage</title>
     <!-- CSS Files -->
-    <link rel="stylesheet" href="../common/css/main.css">
-    <link rel="stylesheet" href="../common/css/background.css">
+    <link rel="stylesheet" href="/src/common/css/main.css">
+    <link rel="stylesheet" href="/src/common/css/background.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 </head>
 
@@ -257,8 +255,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login'])) {
 </section>
 
     <!-- JavaScript Files -->
-    <script src="../common/js/background.js"></script>
-    <script src="../common/js/main.js"></script>
+    <script src="/src/common/js/background.js"></script>
+    <script src="/src/common/js/main.js"></script>
     
 </body>
 

@@ -46,7 +46,6 @@ function getAssignmentIdFromURL()
   // Get the query string:
   const params = new URLSearchParams(window.location.search);
   //Get value of the 'id' parameter:
-  $assignmentId = $_GET['id'] ?? null;
   const id = params.get('id');
   //return id and make sure it is number not string:
   return parseInt(id);
@@ -188,7 +187,7 @@ async function initializePage()
   if(currentAssignmentId===null){console.log("Error! No ID found."); return;};
   //fetch:
   try{
-    const [assignmentsResponse, commentsResponse] = await Promise.all([fetch(`api/index.php?resource=assignments&id=${currentAssignmentId}`), fetch(`api/index.php?resource=comments&id=${currentAssignmentId}`)]);
+    const [assignmentsResponse, commentsResponse] = await Promise.all([fetch(`/api/assignments?resource=assignments&id=${currentAssignmentId}`), fetch(`/api/assignments?resource=comments&id=${currentAssignmentId}`)]);
     if (!assignmentsResponse.ok || !commentsResponse.ok) 
       {
         throw new Error('Failed to fetch data from the API.');

@@ -1,15 +1,15 @@
-<!--
-  Admin View - Course Resources
-  This page allows the teacher/admin to manage all course resources (CRUD).
--->
 <?php
 require_once __DIR__ . "/../../config/Config.php";
 
 if (!isLoggedIn() || !isAdmin()) {
-    header("Location: ../auth/login.php");
+    header("Location: /login");
     exit();
 }
 ?>
+<!--
+  Admin View - Course Resources
+  This page allows the teacher/admin to manage all course resources (CRUD).
+-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -39,12 +39,11 @@ if (!isLoggedIn() || !isAdmin()) {
     </style>
 
     <!-- Link JS -->
-    <script src="admin.js" defer></script>
-    <link rel="stylesheet" href="../common/css/background.css">
-<link rel="stylesheet" href="../common/css/weekly-admin.css">
-<script src="../common/js/background.js"></script>
-<script src="../common/js/goBackButton.js" defer></script>
-<script src="admin.js" defer></script>
+    <link rel="stylesheet" href="/src/common/css/background.css">
+<link rel="stylesheet" href="/src/common/css/weekly-admin.css">
+<script src="/src/common/js/background.js"></script>
+<script src="/src/common/js/goBackButton.js" defer></script>
+<script src="/src/resources/admin.js" defer></script>
 
 </head>
 
