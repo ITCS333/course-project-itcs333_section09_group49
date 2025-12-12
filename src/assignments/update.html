@@ -1,3 +1,4 @@
+<!--
 <?php
 //only a logged-in Admin/Teacher can access this page:
 require_once __DIR__ . "/../../config/Config.php";
@@ -7,7 +8,7 @@ if (!isLoggedIn() || !isAdmin())
     exit();
 }
 ?>
-
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -57,7 +58,7 @@ if (!isLoggedIn() || !isAdmin())
 
         <div class="button-group">
             <button type="submit" id="save-edit-button">Update Assignment</button>
-            <button type="button" onclick="window.location.href='admin.php'">Cancel and Back</button>
+            <button type="button" onclick="window.location.href='admin.html'">Cancel and Back</button>
         </div>
     </fieldset>
 </form>
@@ -65,7 +66,9 @@ if (!isLoggedIn() || !isAdmin())
     <script>
         const updateForm = document.getElementById("update-assignment-form");
         const statusMessage = document.getElementById("status-message");
-        function displayStatus(message, isError = true) {
+
+        function displayStatus(message, isError = true)
+        {
             statusMessage.textContent = message;
             statusMessage.style.display = 'block';
             statusMessage.style.backgroundColor = isError ? '#fdd' : '#dfd';
@@ -79,17 +82,20 @@ if (!isLoggedIn() || !isAdmin())
             }
         }
 
-        function getAssignmentIdFromUrl() {
+        function getAssignmentIdFromUrl()
+        {
             const params = new URLSearchParams(window.location.search);
             return params.get('id');
         }
 
-        async function loadAssignmentDetails(assignmentId) {
+        async function loadAssignmentDetails(assignmentId)
+        {
             if (!assignmentId) {
                 displayStatus("Error: No Assignment ID provided in the URL.", true);
                 return;
             }
-            try {
+            try
+            {
                 // Fetch data for the specific assignment
                 const response = await fetch(`api/index.php?resource=assignments&id=${assignmentId}`);
                 
@@ -102,30 +108,31 @@ if (!isLoggedIn() || !isAdmin())
 
                 const result = await response.json();
 
-                // Populate form fields
                 document.getElementById("assignment-id").value = result.id;
                 document.getElementById("assignment-title").value = result.title || '';
                 document.getElementById("assignment-description").value = result.description || '';
                 document.getElementById("assignment-due-date").value = result.due_date || '';
                 
-                // Handle files data:
                 const filesData = result.files;
                 if (Array.isArray(filesData)) {
-                
+                    // Send array back to a single string for display in textarea
                     document.getElementById("assignment-files").value = filesData.join('\n');
                 } else {
                     document.getElementById("assignment-files").value = filesData || '';
                 }
+
                 updateForm.style.display = 'block';
                 displayStatus("Assignment loaded. Ready to edit.", false);
 
-            } catch (e){ 
+            } catch (e)
+            { 
                 displayStatus(`Network or JSON error loading details: ${e.message}`, true);
                 console.error("Load Catch Error:", e);
             }
         }
-        
-        async function handleUpdateSubmission(event) {
+
+        async function handleUpdateSubmission(event)
+        {
             event.preventDefault();
             displayStatus("Saving changes...", false); 
 
@@ -134,15 +141,15 @@ if (!isLoggedIn() || !isAdmin())
             
             const assignmentId = updatedAssignment.id; 
 
-            try {
-               
+            try 
+            {
+              
                 const response = await fetch(`api/index.php?resource=assignments&id=${assignmentId}`, {
                     method: 'PUT',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(updatedAssignment)
                 });
 
-               
                 const responseText = await response.text();
 
                 // Check if the raw response starts with HTML (<) or is empty
@@ -151,22 +158,24 @@ if (!isLoggedIn() || !isAdmin())
                     console.error("RAW SERVER RESPONSE:", responseText);
                     return; 
                 }
-                
 
-               
                 const result = JSON.parse(responseText); 
 
-                if (result.success) {
+                if (result.success) 
+                {
                     displayStatus('Assignment updated successfully! Redirecting...', false);
-                    
-                    setTimeout(() => {
+                    setTimeout(() => 
+                    {
                         window.location.href = 'admin.html';
                     }, 1000); 
-                } else {
-                    
+                } 
+                else 
+                {
                     displayStatus(`Update failed: ${result.error || result.message || 'Unknown error.'}`, true);
                 }
-            } catch (e) {
+            } 
+            catch (e) 
+            {
                 displayStatus(`Error processing response: ${e.message}. See console for details.`, true);
                 console.error("Final Catch Error:", e);
             }

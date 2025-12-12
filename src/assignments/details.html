@@ -5,7 +5,7 @@
   This page displays the full details for one assignment and allows for discussion.
 -->
 
-<?php
+<!--<?php
 require_once __DIR__ . "/../../config/Config.php";
 //Allow any logged-in user (Teacher OR Student) to view the details of assignmets:
 if (!isLoggedIn()) {
@@ -13,7 +13,7 @@ if (!isLoggedIn()) {
     exit();
 }
 ?>
-
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -22,7 +22,7 @@ if (!isLoggedIn()) {
     <title>Assignment Details</title>
     <script src="details.js" defer></script>
     <!-- CSS FRAMEWORKS -->
-      <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
     <!-- CUSTOM CSS FILES -->
       <style>
           #assignment-title{text-align: center;}
@@ -40,9 +40,9 @@ if (!isLoggedIn()) {
           #assignment-due-date{text-align:center;}
       </style>
     <!-- FONTS -->
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
 
 </head>
 <body>
@@ -51,19 +51,20 @@ if (!isLoggedIn()) {
         <h1 id="assignment-title"></h1>
     </header>
     <main>
-        <!-- Section 1: Assignment Information -->
-         <article>
+        <article>
             <!-- dummy date in YYYY-MM-DD format -->
             <p id="assignment-due-date"></p>
             <h2>Description</h2>
             <!-- dummy description -->
             <p id="assignment-description"></p>
+
             <h2>Attached Files & Links</h2>
             <ul id="assignment-files-list">
                 <!-- dummy links -->
                 
             </ul>
         </article>
+        <!-- Section 1: Assignment Information -->
         <!-- Section 2: Discussion Forum -->
         <section id="discussion-forum">
             <h2>Questions & Discussion</h2>
@@ -71,6 +72,7 @@ if (!isLoggedIn()) {
             <div id="comment-list">
                 <!-- Dummy data for structure demonstration -->
                 <!-- First dummy discussion row -->
+                 <li><a href="#"></a></li>
                 <!-- Second dummy discussion row -->
             </div>
             <!-- Subsection 2.2: Add a Comment Form -->
@@ -82,7 +84,7 @@ if (!isLoggedIn()) {
 
                     <button type="submit">Post Comment</button>
                 </fieldset>
-                <a href="list.php"><button type="button">Back</button></a>
+                <a href="list.html"><button type="button">Back</button></a>
             </form>
         </section>
     </main>

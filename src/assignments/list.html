@@ -5,7 +5,7 @@
   This page is a read-only view for students to see all course assignments.
   Each assignment should link to its dedicated detail page.
 -->
-
+<!--
 <?php
 require_once __DIR__ . "/../../config/Config.php";
 // Allow any logged-in user (Teacher OR Student) to view the assignmets list:
@@ -14,7 +14,7 @@ if (!isLoggedIn())
     header("Location: ../auth/login.php");
     exit();
 }?>
-
+-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,16 +23,17 @@ if (!isLoggedIn())
     <title>Course Assignments</title>
     <script src="list.js" defer></script>
     <!-- CSS FRAMEWORKS -->
-     <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.*/css/pico.min.css">
     <!-- CUSTOM CSS FILES -->
-        <style>
+       <style>
            h1{text-align: center;}
            a{margin:2rem; display:flex;}
          </style>
     <!-- FONTS -->
-     <link rel="preconnect" href="https://fonts.googleapis.com">
-     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+
 
 </head>
 <body>
