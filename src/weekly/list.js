@@ -23,7 +23,11 @@ function createWeekArticle(week) {
 }
 
 async function loadWeeks() {
+  if (typeof document === 'undefined') return;
+  
   const listSection = document.getElementById('week-list-section');
+  if (!listSection) return;
+  
   try {
     const response = await fetch('/api/weekly');
     const result = await response.json();
@@ -57,14 +61,3 @@ async function loadWeeks() {
 }
 
 loadWeeks();
-
-if (typeof document !== 'undefined') {
-  document.addEventListener("DOMContentLoaded", () => {
-    const btn = document.getElementById("go-back-btn");
-    if (!btn) return;
-
-    btn.addEventListener("click", () => {
-      window.location.href = "/admin";
-    });
-  });
-}
