@@ -319,3 +319,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener("DOMContentLoaded", initializePage);
+
+async function loadAuthInfo() {
+    try {
+        const res = await fetch('/api/auth/me.php');
+
+        if (!res.ok) {
+            window.location.href = '/login';
+            return;
+        }
+
+        const data = await res.json();
+
+        window.IS_ADMIN = data.isAdmin;
+        window.LOGGED_IN_USER_ID = data.userId;
+        window.LOGGED_IN_USER_NAME = data.username;
+
+        window.BACK_URL = data.isAdmin
+            ? '/weekly/admin'
+            : '/weekly/list';
+
+    } catch (err) {
+        console.error('Auth check failed', err);
+        window.location.href = '/login';
+    }
+}
+
+loadAuthInfo();

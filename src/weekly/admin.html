@@ -1,12 +1,12 @@
-<?php
-require_once __DIR__ . "/../../config/Config.php";
+<!-- <?php 
+// require_once __DIR__ . "/../../config/Config.php";
 
-if (!isLoggedIn() || !isAdmin()) {
-    header("Location: /login");
-    exit();
-}
+// if (!isLoggedIn() || !isAdmin()) {
+//     header("Location: /login");
+//     exit();
+// }
 
-?>
+?>-->
 
 
 <!DOCTYPE html>
@@ -28,9 +28,6 @@ if (!isLoggedIn() || !isAdmin()) {
     <!-- JS FILES -->
     <script src="/src/common/js/background.js"></script>
     <script src="/src/weekly/admin.js" defer></script>
-    <script>
-    window.BACK_URL = <?= isAdmin() ? '"/weekly/admin"' : '"/weekly/list"' ?>;
-    </script>
 
 </head>
 

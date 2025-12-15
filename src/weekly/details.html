@@ -1,17 +1,4 @@
-<?php
-require_once __DIR__ . '/../../config/Config.php';
 
-// Check if user is logged in
-if (!isLoggedIn()) {
-    header("Location: /login");
-    exit();
-}
-
-// Safely read session values
-$loggedInUserId   = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null; // Changed from 'id' to 'user_id'
-$loggedInUsername = isset($_SESSION['username']) ? $_SESSION['username'] : null;
-$isAdmin          = function_exists('isAdmin') ? isAdmin() : false;
-?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,15 +15,6 @@ $isAdmin          = function_exists('isAdmin') ? isAdmin() : false;
     <!-- CUSTOM CSS FILES -->
     <link rel="stylesheet" href="/src/common/css/background.css">
     <link rel="stylesheet" href="/src/common/css/weekly-details.css">
-
-    <!-- JS GLOBALS FROM PHP -->
-    <script>
-    window.IS_ADMIN = <?= $isAdmin ? 'true' : 'false'; ?>;
-    window.LOGGED_IN_USER_ID = <?= $loggedInUserId !== null ? $loggedInUserId : 'null' ?>;
-    window.LOGGED_IN_USER_NAME = <?= json_encode($loggedInUsername) ?>;
-
-    window.BACK_URL = <?= $isAdmin ? '"/weekly/admin"' : '"/weekly/list"' ?>;
-    </script>
 
     <!-- JS FILES -->
     <script src="/src/common/js/background.js"></script>

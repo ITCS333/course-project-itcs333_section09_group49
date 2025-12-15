@@ -551,3 +551,18 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/admin";
   });
 });
+
+async function resolveBackUrl() {
+    try {
+        const res = await fetch("/api/auth/status.php");
+        const data = await res.json();
+
+        window.BACK_URL = data.isAdmin
+            ? "/weekly/admin"
+            : "/weekly/list";
+    } catch (err) {
+        window.BACK_URL = "/weekly/list"; 
+    }
+}
+
+resolveBackUrl();

@@ -5,6 +5,10 @@
  * Escaping happens ONLY on the frontend (safe with JS .textContent)
  */
 
+session_start();
+
+$userId = $_SESSION['user_id'] ?? null;
+
 header("Content-Type: application/json");
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -320,4 +324,16 @@ else {
     sendError("Method not allowed", 405);
 }
 
+
+
+function isValidEmail($email) {
+    return filter_var($email, FILTER_VALIDATE_EMAIL);
+}
+
+function dummyPasswordCheck($password, $hash) {
+    return password_verify($password, $hash);
+}
+
+
 ?>
+
