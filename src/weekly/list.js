@@ -1,13 +1,3 @@
-
-
-
-
-
-const listSection = document.getElementById('week-list-section');
-
-
-
-
 function createWeekArticle(week) {
   const article = document.createElement('article');
 
@@ -19,7 +9,6 @@ function createWeekArticle(week) {
 
   const description = document.createElement('p');
   description.textContent = week.description;
-
 
   const detailsLink = document.createElement('a');
   detailsLink.href = `/weekly/details?id=${week.id}`;
@@ -33,11 +22,8 @@ function createWeekArticle(week) {
   return article;
 }
 
-
-
-
-
 async function loadWeeks() {
+  const listSection = document.getElementById('week-list-section');
   try {
     const response = await fetch('/api/weekly');
     const result = await response.json();
@@ -63,18 +49,22 @@ async function loadWeeks() {
 
   } catch (error) {
     console.error('Error loading weeks:', error);
-    listSection.innerHTML =
-      '<p>Error loading weekly breakdown. Please try again later.</p>';
+    if (listSection) {
+      listSection.innerHTML =
+        '<p>Error loading weekly breakdown. Please try again later.</p>';
+    }
   }
 }
 
 loadWeeks();
 
-document.addEventListener("DOMContentLoaded", () => {
-  const btn = document.getElementById("go-back-btn");
-  if (!btn) return;
+if (typeof document !== 'undefined') {
+  document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("go-back-btn");
+    if (!btn) return;
 
-  btn.addEventListener("click", () => {
-    window.location.href = "/admin";
+    btn.addEventListener("click", () => {
+      window.location.href = "/admin";
+    });
   });
-});
+}
