@@ -48,15 +48,15 @@ switch ($path) {
     // ----------------------------------------------
 
     case "weekly/list":
-        include __DIR__ . "/src/weekly/list.php";
+        include __DIR__ . "/src/weekly/list.html";
         break;
 
     case "weekly/details":
-        include __DIR__ . "/src/weekly/details.php";
+        include __DIR__ . "/src/weekly/details.html";
         break;
 
     case "weekly/admin":
-        include __DIR__ . "/src/weekly/admin.php";
+        include __DIR__ . "/src/weekly/admin.html";
         break;
 
 
