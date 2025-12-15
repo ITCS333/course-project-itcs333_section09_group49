@@ -68,7 +68,7 @@ async function loadWeeks() {
   }
 }
 
-// loadWeeks();
+loadWeeks();
 
 document.addEventListener("DOMContentLoaded", () => {
   const btn = document.getElementById("go-back-btn");
