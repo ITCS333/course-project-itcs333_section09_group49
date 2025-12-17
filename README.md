@@ -10,7 +10,7 @@
 | Malak Zakareya Husain                         | 202208286    | MalakZakareya      | malakl7assan@gmail.com         |
 | Fatema Ali Ahmed Alkomaish                    | 202208354    | FatemaAliAhmed     | f2a0t0k4@gmail.com             |
 | Manar Ali Jaafar Shaikh Yusuf                 | 202208628    | manar-alshaikh     | manar_alshaik@hotmail.com      |
-| Taqwa Sayed Mahdi Khalil Ali Abdulla         | 202208441    | Taqwa-Abdulla      | taqwasat@gmail.com             |
+| Taqwa Sayed Mahdi Khalil Ali Abdulla         | 202208441    | Taqwa-Abdulla      |              |
 
 ## 📋 Task Assignment
 
@@ -19,7 +19,7 @@
 | **Task 1** 🏠             | FatemaAliAhmed      | Homepage, Admin Portal & User Management |
 | **Task 2** 📚             | MalakZakareya       | Course Resources & Materials            |
 | **Task 3** 📅             | manar-alshaikh      | Weekly Breakdown & Schedule             |
-| **Task 4** 📝             | Taqwa-Abdulla       | Assignments & Submissions               |
+| **Task 4** 📝             | Taqwa-Abdulla       | Assignments               |
 | **Task 5** 💬             | Collaborative work  | General Discussion Boards               |
 
 ## A link to your live, hosted application on Replit.
