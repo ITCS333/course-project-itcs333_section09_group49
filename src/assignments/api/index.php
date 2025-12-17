@@ -1,4 +1,5 @@
 <?php
+session_start();
 /*For testing:
 ini_set('display_errors', 1);
 error_reporting(E_ALL);*/
@@ -756,9 +757,35 @@ require_login(); // blocks if not logged in
 // For admin-only endpoints:
 require_role('teacher'); // blocks if current user is not teacher
  */
+// TODO: Get the 'resource' query parameter to determine which resource to access
+ $resource = $_GET['resource'] ?? '';
+//access control ---
+   $adminActions = [
+    'assignments' => ['POST', 'PUT', 'DELETE'],
+    'comments'    => ['PUT', 'DELETE']
+];
+$studentAction = ['comments' =>['POST']];
+//Anyone can view assignments list and can view comments
+//admin:
+if (isset($adminActions[$resource]))
+{
+    if (in_array($method, $adminActions[$resource]))
+    {
+        //only admin: create, update, delete assignments and comments (Full CRUD):
+        requireAdmin();
+    }
+}
+//students:
+if(isset($studentAction[$resource]))
+    {
+        //only login student:
+        if(in_array($method,$studentAction[$resource]))
+            {
+                requireLogin();
+            }
+    }
+
 try {
-    // TODO: Get the 'resource' query parameter to determine which resource to access
-    $resource = $_GET['resource'] ?? '';
     $res = null;
 
     // TODO: Route based on HTTP method and resource type
